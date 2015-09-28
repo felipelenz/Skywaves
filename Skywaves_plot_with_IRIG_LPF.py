@@ -15,7 +15,7 @@ import IRIGA
 from pylab import ginput, plot, show
 from scipy.signal import butter, lfilter
 
-def Skywave(event,RS_number, RS_time): 
+def Skywave(event,RS_number, RS_time,suffix): 
  
 
 
@@ -33,7 +33,7 @@ def Skywave(event,RS_number, RS_time):
     # Read Files #
     ##############
     #import IRIG file
-    lecroy_fileName_DBY_IRIG = "/Volumes/Promise 12TB RAID5/2015 Data/082715/DBY Data/C2DBY00008.trc"
+    lecroy_fileName_DBY_IRIG = "/Volumes/Promise 12TB RAID5/2015 Data/082715/DBY Data/C2DBY0000"+str(suffix)+".trc"
     lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
     seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
     segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
@@ -43,7 +43,7 @@ def Skywave(event,RS_number, RS_time):
     print(timestamp)
     
     #import skywaves data
-    lecroy_fileName_DBY = "/Volumes/Promise 12TB RAID5/2015 Data/082715/DBY Data/C1DBY00008.trc"
+    lecroy_fileName_DBY = "/Volumes/Promise 12TB RAID5/2015 Data/082715/DBY Data/C1DBY0000"+str(suffix)+".trc"
     lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
     seg_time_DBY = lecroy_DBY.get_seg_time()
     segments_DBY = lecroy_DBY.get_segments()
@@ -118,14 +118,14 @@ def Skywave(event,RS_number, RS_time):
     #plt.grid()
     
     # Filter the data, and plot both the original and filtered signals.
-    filtered_skywave = butter_lowpass_filter(skywave, cutoff, fs, order)
-    group_delay=.6e-6
-    plt.plot(time, skywave, 'b-', label='data')
-    plt.plot(time-group_delay, filtered_skywave, 'r-', linewidth=2, label='low pass filtered data')
-    plt.xlim(0,x_max)
-    plt.title("UF 15-"+str(event)+ " return stroke #"+str(RS_number) )
-    plt.xlabel('UTC Time in seconds after '+str(timestamp.hour)+':'+str(timestamp.minute)+':'+str(round((timestamp.second+timestamp.microsecond/1e6+t0)*1e9)/1e9))
-    plt.grid()
+#    filtered_skywave = butter_lowpass_filter(skywave, cutoff, fs, order)
+#    group_delay=.6e-6
+#    plt.plot(time, skywave, 'b-', label='data')
+#    plt.plot(time-group_delay, filtered_skywave, 'r-', linewidth=2, label='low pass filtered data')
+#    plt.xlim(0,x_max)
+#    plt.title("UF 15-"+str(event)+ " return stroke #"+str(RS_number) )
+#    plt.xlabel('UTC Time in seconds after '+str(timestamp.hour)+':'+str(timestamp.minute)+':'+str(round((timestamp.second+timestamp.microsecond/1e6+t0)*1e9)/1e9))
+#    plt.grid()
     
     #########################
     # Moving Average Filter #
@@ -135,9 +135,9 @@ def Skywave(event,RS_number, RS_time):
         return np.convolve(interval, window, 'same')
         
     avg_skywave=movingaverage(skywave,10)
-    plt.plot(time, avg_skywave,'g',linewidth=2, label='moving average data')
-    plt.legend()
-    plt.show()
+#    plt.plot(time, avg_skywave,'g',linewidth=2, label='moving average data')
+#    plt.legend()
+#    plt.show()
     
     ####################
     # Measure Risetime #
