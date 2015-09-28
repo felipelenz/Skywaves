@@ -6,6 +6,8 @@ Created on Thu Sep 10 11:48:47 2015
 This code finds skywaves that happened at a specified (input) UTC time,
 applies two filters to the data (low pass and moving average), the measures
 the risetime of the signal.
+
+This is a change to see how github works
 """
 from __future__ import division
 import lecroy as lc
