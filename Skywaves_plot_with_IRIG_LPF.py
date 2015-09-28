@@ -6,6 +6,23 @@ Created on Thu Sep 10 11:48:47 2015
 This code finds skywaves that happened at a specified (input) UTC time,
 applies two filters to the data (low pass and moving average), the measures
 the risetime of the signal.
+
+###########
+# Inputs: #
+###########
+
+event= event number (e.g. 38)
+RS_number= return stroke number (e.g. 2)
+RS_time=seconds of the XLI time stamp (for trigger lightning) this time can 
+be found in the triggered lightning reports (e.g. 26.579535265)
+
+############
+# Outputs: #
+############
+moving_avg[0]=time list 
+moving_avg[1]=filtered skywave (moving average) list
+moving_avg[2]=UTC_time string
+
 """
 from __future__ import division
 import lecroy as lc
@@ -59,6 +76,8 @@ def Skywave(event,RS_number, RS_time,suffix):
     #plt.title("UF 15-"+str(event)+ " return stroke #"+str(RS_number) )
     #plt.grid()
     #plt.show()
+    seconds=(round((timestamp.second+timestamp.microsecond/1e6+t0)*1e9)/1e9)
+    UTC_time= "%r:%r:%r" %(timestamp.hour,timestamp.minute,seconds)
     
     skywave=segments_DBY[0][n0:nf];
     time=t[n0:nf]-t0;
@@ -193,4 +212,4 @@ def Skywave(event,RS_number, RS_time,suffix):
 #    unfiltered = noise_analysis(time,skywave,10e6,0)
 #    print("Unfiltered 10-90 risetime = %r" %unfiltered[0])
 
-    return time, avg_skywave
+    return time, avg_skywave, UTC_time
