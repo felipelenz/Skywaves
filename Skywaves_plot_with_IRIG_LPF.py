@@ -161,37 +161,38 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     ####################
     # Measure Risetime #
     ####################
-#    def noise_analysis(x,y,fs,t0):
-#        
+    def noise_analysis(x,y,fs,t0):
+        
 #        plot(x,y)
 #        print("Please click")
 #        xx = ginput(3)
-#        sampling_time=1/fs
-#        t0_noise=np.int(xx[0][0]/sampling_time)-t0/sampling_time
-#        tf_noise=np.int(xx[1][0]/sampling_time)-t0/sampling_time
-#        t_end=np.int(xx[2][0]/sampling_time)-t0/sampling_time
+        xx=[0,0.00008,0.000095] #just for this application! 
+        sampling_time=1/fs
+        t0_noise=np.int(xx[0]/sampling_time)-t0/sampling_time
+        tf_noise=np.int(xx[1]/sampling_time)-t0/sampling_time
+        t_end=np.int(xx[2]/sampling_time)-t0/sampling_time
 #        show()  
-#        
-#        t_max=np.argmax(y[0:t_end])
-#        y_topeak=y[0:t_max]
-#        noise_data_window=y_topeak[t0_noise:tf_noise]
-#        sigma=np.std(noise_data_window)
-#        mean=np.mean(noise_data_window)
-#    
-#        min_ind=np.argmax(np.abs(1.0/((mean+3*sigma)-y_topeak)))   
-#        min_ampl=y_topeak[min_ind]
-#        max_ampl=np.max(y_topeak)
-#        y_ampl=max_ampl-min_ampl
-#       
-#        ten_percent_ind=np.argmax(np.abs(1.0/((0.1*y_ampl+min_ampl)-y_topeak)))  
-#        twenty_percent_ind=np.argmax(np.abs(1.0/((0.2*y_ampl+min_ampl)-y_topeak))) 
-#        fifty_percent_ind=np.argmax(np.abs(1.0/((0.5*y_ampl+min_ampl)-y_topeak))) 
-#        eighty_percent_ind=np.argmax(np.abs(1.0/((0.8*y_ampl+min_ampl)-y_topeak))) 
-#        ninety_percent_ind=np.argmax(np.abs(1.0/((0.9*y_ampl+min_ampl)-y_topeak))) 
-#        risetime_90_10=ninety_percent_ind-ten_percent_ind
-#        risetime_90_10_time=risetime_90_10*sampling_time  
-#        
-#        print("standard deviation= %.4f noise mean= %.4f"%(sigma,mean))
+        
+        t_max=np.argmax(y[0:t_end])
+        y_topeak=y[0:t_max]
+        noise_data_window=y_topeak[t0_noise:tf_noise]
+        sigma=np.std(noise_data_window)
+        mean=np.mean(noise_data_window)
+    
+        min_ind=np.argmax(np.abs(1.0/((mean+5*sigma)-y_topeak)))   
+        min_ampl=y_topeak[min_ind]
+        max_ampl=np.max(y_topeak)
+        y_ampl=max_ampl-min_ampl
+       
+        ten_percent_ind=np.argmax(np.abs(1.0/((0.1*y_ampl+min_ampl)-y_topeak)))  
+        twenty_percent_ind=np.argmax(np.abs(1.0/((0.2*y_ampl+min_ampl)-y_topeak))) 
+        fifty_percent_ind=np.argmax(np.abs(1.0/((0.5*y_ampl+min_ampl)-y_topeak))) 
+        eighty_percent_ind=np.argmax(np.abs(1.0/((0.8*y_ampl+min_ampl)-y_topeak))) 
+        ninety_percent_ind=np.argmax(np.abs(1.0/((0.9*y_ampl+min_ampl)-y_topeak))) 
+        risetime_90_10=ninety_percent_ind-ten_percent_ind
+        risetime_90_10_time=risetime_90_10*sampling_time  
+        
+        print("standard deviation= %.4f noise mean= %.4f"%(sigma,mean))
 #        plot(x,y, 'b', \
 #        x[t0_noise:tf_noise],y[t0_noise:tf_noise], 'g', \
 #        [x[0],x[-1]],[mean,mean], 'r', \
@@ -199,17 +200,20 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
 #        [x[0],x[-1]],[mean-sigma,mean-sigma], '--r', \
 #        [x[min_ind],x[ten_percent_ind],x[ninety_percent_ind]],[y[min_ind],y[ten_percent_ind],y[ninety_percent_ind]], 'or')
 #        show()
-#        
-#        return risetime_90_10_time,ten_percent_ind,twenty_percent_ind,fifty_percent_ind,eighty_percent_ind,ninety_percent_ind,risetime_90_10
-#        
+        
+        return risetime_90_10_time,ten_percent_ind,min_ind,twenty_percent_ind,fifty_percent_ind,eighty_percent_ind,ninety_percent_ind,risetime_90_10
+        
 #    time2=time-group_delay
 #    LPF_skywave = noise_analysis(time2,filtered_skywave,10e6,0)
 #    print("LPF 10-90 risetime = %r" %LPF_skywave[0])
 #    
-#    MovAvg_skywave = noise_analysis(time,avg_skywave,10e6,0)
+    MovAvg_skywave = noise_analysis(time,avg_skywave,10e6,0)
+    risetime_10_90=MovAvg_skywave[0]
+    ten_percent_level=MovAvg_skywave[1]*(1/fs)
+    ground_wave_start=MovAvg_skywave[2]*(1/fs)
 #    print("Moving Average 10-90 risetime = %r" %MovAvg_skywave[0])
 #    
 #    unfiltered = noise_analysis(time,skywave,10e6,0)
 #    print("Unfiltered 10-90 risetime = %r" %unfiltered[0])
 
-    return time, avg_skywave, UTC_time
+    return time, avg_skywave, UTC_time,risetime_10_90,ten_percent_level,ground_wave_start
