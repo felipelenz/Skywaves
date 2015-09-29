@@ -32,7 +32,7 @@ import IRIGA
 from pylab import ginput, plot, show
 from scipy.signal import butter, lfilter
 
-def Skywave(event,RS_number, RS_time,suffix): 
+def Skywave(event,RS_number, RS_time,suffix,x_max): 
  
 
 
@@ -44,7 +44,7 @@ def Skywave(event,RS_number, RS_time,suffix):
 #    RS_number=2 #return stroke number
 #    RS_time=26.579535265 #seconds of the XLI time stamp (for trigger lightning) 
 #                        #this time can be found in the triggered lightning reports
-    x_max=0.00035 #xlim max for plotting the skywaves
+#    x_max=0.00035 #xlim max for plotting the skywaves
     
     ##############
     # Read Files #
@@ -65,7 +65,7 @@ def Skywave(event,RS_number, RS_time,suffix):
     seg_time_DBY = lecroy_DBY.get_seg_time()
     segments_DBY = lecroy_DBY.get_segments()
     
-    t0=RS_time-(timestamp.second+timestamp.microsecond/1e6)+200e3/2.99e8
+    t0=RS_time-(timestamp.second+timestamp.microsecond/1e6)+180e3/2.99e8
     t0=round(t0*1e9)/1e9
     tf=t0+0.5
     n0=int((t0-0.5)*fs)
