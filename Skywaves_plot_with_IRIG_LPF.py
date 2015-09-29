@@ -157,7 +157,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
 #    plt.plot(time, avg_skywave,'g',linewidth=2, label='moving average data')
 #    plt.legend()
 #    plt.show()
-    
+#    
     ####################
     # Measure Risetime #
     ####################
@@ -179,7 +179,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
         sigma=np.std(noise_data_window)
         mean=np.mean(noise_data_window)
     
-        min_ind=np.argmax(np.abs(1.0/((mean+5*sigma)-y_topeak)))   
+        min_ind=np.argmax(np.abs(1.0/((mean+4*sigma)-y_topeak)))   
         min_ampl=y_topeak[min_ind]
         max_ampl=np.max(y_topeak)
         y_ampl=max_ampl-min_ampl
@@ -201,7 +201,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
 #        [x[min_ind],x[ten_percent_ind],x[ninety_percent_ind]],[y[min_ind],y[ten_percent_ind],y[ninety_percent_ind]], 'or')
 #        show()
         
-        return risetime_90_10_time,ten_percent_ind,min_ind,twenty_percent_ind,fifty_percent_ind,eighty_percent_ind,ninety_percent_ind,risetime_90_10
+        return risetime_90_10_time,ten_percent_ind,min_ind,y_ampl,twenty_percent_ind,fifty_percent_ind,eighty_percent_ind,ninety_percent_ind,risetime_90_10
         
 #    time2=time-group_delay
 #    LPF_skywave = noise_analysis(time2,filtered_skywave,10e6,0)
@@ -211,9 +211,10 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     risetime_10_90=MovAvg_skywave[0]
     ten_percent_level=MovAvg_skywave[1]*(1/fs)
     ground_wave_start=MovAvg_skywave[2]*(1/fs)
-#    print("Moving Average 10-90 risetime = %r" %MovAvg_skywave[0])
-#    
+    ground_wave_ampl=MovAvg_skywave[3]
+    print("Moving Average 10-90 risetime = %r" %MovAvg_skywave[0])
+    
 #    unfiltered = noise_analysis(time,skywave,10e6,0)
 #    print("Unfiltered 10-90 risetime = %r" %unfiltered[0])
 
-    return time, avg_skywave, UTC_time,risetime_10_90,ten_percent_level,ground_wave_start
+    return time, avg_skywave, UTC_time,risetime_10_90,ten_percent_level,ground_wave_start,ground_wave_ampl
