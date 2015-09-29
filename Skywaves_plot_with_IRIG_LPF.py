@@ -168,9 +168,9 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
 #        xx = ginput(3)
         xx=[0,0.00008,0.000095] #just for this application! 
         sampling_time=1/fs
-        t0_noise=np.int(xx[0]/sampling_time)-t0/sampling_time
-        tf_noise=np.int(xx[1]/sampling_time)-t0/sampling_time
-        t_end=np.int(xx[2]/sampling_time)-t0/sampling_time
+        t0_noise=np.int(xx[0]/sampling_time)-t0/sampling_time #xx[0][0] when ginput is being used
+        tf_noise=np.int(xx[1]/sampling_time)-t0/sampling_time #xx[1][0] when ginput is being used
+        t_end=np.int(xx[2]/sampling_time)-t0/sampling_time #xx[2][0] when ginput is being used
 #        show()  
         
         t_max=np.argmax(y[0:t_end])
@@ -192,7 +192,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
         risetime_90_10=ninety_percent_ind-ten_percent_ind
         risetime_90_10_time=risetime_90_10*sampling_time  
         
-        print("standard deviation= %.4f noise mean= %.4f"%(sigma,mean))
+#        print("standard deviation= %.4f noise mean= %.4f"%(sigma,mean))
 #        plot(x,y, 'b', \
 #        x[t0_noise:tf_noise],y[t0_noise:tf_noise], 'g', \
 #        [x[0],x[-1]],[mean,mean], 'r', \
