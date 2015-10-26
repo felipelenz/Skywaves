@@ -19,7 +19,7 @@ x_max=0.00050*1e6
 #waveform=moving_avg[1][10:-10]
 #yoffset=np.mean(waveform[0:800])
 #t_reference=moving_avg[5]*1e6
-#plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,label="UF 15-38, RS#2, Peak Current = 15.1 kA",linewidth=2.0) #moving averaged skywave
+#plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,label="UF 15-38, RS#1, Peak Current = 15.1 kA",linewidth=2.0) #moving averaged skywave
 #
 #moving_avg=Skywave(38,2,26.579535265,8,x_max)
 #waveform=moving_avg[1][10:-10]
