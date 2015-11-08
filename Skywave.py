@@ -31,6 +31,19 @@ moving_avg=Skywave(38,2,26.579535265,8,x_max)
 plt.subplot(6,1,1)
 waveform=moving_avg[1][10:-10]
 yoffset=np.mean(waveform[0:800])
+
+## Remove 60 Hz slope ##
+x0=moving_avg[0][10]
+x1=moving_avg[0][4990] #500 us  = 5000 samples at 10MHz fs
+    
+y0=moving_avg[1][10]
+y1=moving_avg[1][4990] 
+m=(y1-y0)/(x1-x0)
+b=-m*x0*y0
+            
+slope=m*moving_avg[0][10:-10]+b #y=mx+b
+yoffset=yoffset+slope
+
 plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,label="Filtered signal",linewidth=2.0) #moving averaged skywave
 #plt.plot(moving_avg[0][10:-10]*1e6+dt_90km*1e6,moving_avg[1][10:-10]-yoffset,label="Filtered signal",linewidth=2.0) #moving averaged skywave
 plt.plot([moving_avg[5]*1e6,moving_avg[5]*1e6],[-.2,1.2],'--',label="Time when signal raises 5 std. dev. from noise mean",linewidth=2.0) #time when skywave raises 3 std dev from mean noise
@@ -44,11 +57,24 @@ plt.xlim(x_min,x_max)
 plt.ylim(-0.08,0.9)
 plt.legend(bbox_to_anchor=(0., 1.5, 1., 0.2), loc=3,
            ncol=3, mode="expand", borderaxespad=0.)
+           
 #
 moving_avg=Skywave(39,1,66.583436840,9,x_max)
 plt.subplot(6,1,2)
 waveform=moving_avg[1][10:-10]
 yoffset=np.mean(waveform[0:800])
+## Remove 60 Hz slope ##
+x0=moving_avg[0][10]
+x1=moving_avg[0][4990] #500 us  = 5000 samples at 10MHz fs
+    
+y0=moving_avg[1][10]
+y1=moving_avg[1][4990] 
+m=(y1-y0)/(x1-x0)
+b=-m*x0*y0
+            
+slope=m*moving_avg[0][10:-10]+b #y=mx+b
+yoffset=yoffset+slope
+
 plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,linewidth=2.0)
 plt.plot([moving_avg[5]*1e6,moving_avg[5]*1e6],[-0.13,0.47],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
 plt.plot([(moving_avg[5]+dt_70km)*1e6,(moving_avg[5]+dt_70km)*1e6],[-0.13,0.47],'--',linewidth=2.0) #time for 70 km h iono
@@ -65,6 +91,19 @@ moving_avg=Skywave(40,3,20.767465080,10,x_max)
 plt.subplot(6,1,3)
 waveform=moving_avg[1][10:-10]
 yoffset=np.mean(waveform[0:800])
+
+## Remove 60 Hz slope ##
+x0=moving_avg[0][10]
+x1=moving_avg[0][4990] #500 us  = 5000 samples at 10MHz fs
+    
+y0=moving_avg[1][10]
+y1=moving_avg[1][4990] 
+m=(y1-y0)/(x1-x0)
+b=-m*x0*y0
+            
+slope=m*moving_avg[0][10:-10]+b #y=mx+b
+yoffset=yoffset+slope
+
 plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,linewidth=2.0)
 plt.plot([moving_avg[5]*1e6,moving_avg[5]*1e6],[-1,1],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
 plt.plot([(moving_avg[5]+dt_70km)*1e6,(moving_avg[5]+dt_70km)*1e6],[-1,1],'--',linewidth=2.0) #time for 70 km h iono
@@ -80,6 +119,19 @@ moving_avg=Skywave(41,1,57.298446790,11,x_max)
 plt.subplot(6,1,4)
 waveform=moving_avg[1][10:-10]
 yoffset=np.mean(waveform[0:800])
+
+## Remove 60 Hz slope ##
+x0=moving_avg[0][10]
+x1=moving_avg[0][4990] #500 us  = 5000 samples at 10MHz fs
+    
+y0=moving_avg[1][10]
+y1=moving_avg[1][4990] 
+m=(y1-y0)/(x1-x0)
+b=-m*x0*y0
+            
+slope=m*moving_avg[0][10:-10]+b #y=mx+b
+yoffset=yoffset+slope
+
 plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,linewidth=2.0)
 plt.plot([moving_avg[5]*1e6,moving_avg[5]*1e6],[-1,1],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
 plt.plot([(moving_avg[5]+dt_70km)*1e6,(moving_avg[5]+dt_70km)*1e6],[-1,1],'--',linewidth=2.0) #time for 70 km h iono
@@ -95,6 +147,19 @@ moving_avg=Skywave(42,4,43.058185590,12,x_max)
 plt.subplot(6,1,5)
 waveform=moving_avg[1][10:-10]
 yoffset=np.mean(waveform[0:800])
+
+## Remove 60 Hz slope ##
+x0=moving_avg[0][10]
+x1=moving_avg[0][4990] #500 us  = 5000 samples at 10MHz fs
+    
+y0=moving_avg[1][10]
+y1=moving_avg[1][4990] 
+m=(y1-y0)/(x1-x0)
+b=-m*x0*y0
+            
+slope=m*moving_avg[0][10:-10]+b #y=mx+b
+yoffset=yoffset+slope
+
 plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,linewidth=2.0)
 plt.plot([moving_avg[5]*1e6,moving_avg[5]*1e6],[-1,1],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
 plt.plot([(moving_avg[5]+dt_70km)*1e6,(moving_avg[5]+dt_70km)*1e6],[-1,1],'--',linewidth=2.0) #time for 70 km h iono
@@ -111,6 +176,19 @@ moving_avg=Skywave(43,4,23.293418545,13,x_max)
 plt.subplot(6,1,6)
 waveform=moving_avg[1][10:-10]
 yoffset=np.mean(waveform[0:800])
+
+## Remove 60 Hz slope ##
+x0=moving_avg[0][10]
+x1=moving_avg[0][4990] #500 us  = 5000 samples at 10MHz fs
+    
+y0=moving_avg[1][10]
+y1=moving_avg[1][4990] 
+m=(y1-y0)/(x1-x0)
+b=-m*x0*y0
+            
+slope=m*moving_avg[0][10:-10]+b #y=mx+b
+yoffset=yoffset+slope
+
 plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,linewidth=2.0)
 plt.plot([moving_avg[5]*1e6,moving_avg[5]*1e6],[-1,1],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
 plt.plot([(moving_avg[5]+dt_70km)*1e6,(moving_avg[5]+dt_70km)*1e6],[-1,1],'--',linewidth=2.0) #time for 70 km h iono
