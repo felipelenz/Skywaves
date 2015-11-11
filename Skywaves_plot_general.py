@@ -3,34 +3,34 @@
 Created on Thu Sep 10 11:48:47 2015
 
 @author: lenz
-This code finds skywaves that happened at a specified (input) UTC time,
-applies two filters to the data (low pass and moving average), the measures
-the risetime of the signal.
+This code finds skywaves that happened at a specified (input) UTC time
 
 ###########
 # Inputs: #
 ###########
 
-event= event number (e.g. 38)
-RS_number= return stroke number (e.g. 2)
 RS_time=seconds of the XLI time stamp (for trigger lightning) this time can 
-be found in the triggered lightning reports (e.g. 26.579535265)
+be found in the triggered lightning reports (e.g. 26.579535265) or from NLDN
+data (for naturals)
+date=date
+fs=sampling frequency
+suffix=file identifier
+Horizontal_distance=distance between DBY and RS (calculated from their lat and long)
+x_max=time limit
 
 ############
 # Outputs: #
 ############
-moving_avg[0]=time list 
-moving_avg[1]=filtered skywave (moving average) list
-moving_avg[2]=UTC_time string
+time=time list 
+skywave= skywave list
+UTC_Time=UTC_time string
+t0=reference time (see below for specifics)
 
 """
 from __future__ import division
 import lecroy as lc
-import numpy as np
 import matplotlib.pyplot as plt
 import IRIGA
-from pylab import ginput, plot, show
-from scipy.signal import butter, lfilter
 
 #def Skywave(RS_time,suffix,x_max): 
  
