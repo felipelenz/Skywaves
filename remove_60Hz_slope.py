@@ -41,7 +41,7 @@ def remove_slope(x,y,fs,t0): #t0 is the pretrigger!
     b=-m*x0*y0
     
     print('y='+str(m)+'x'+str(b))
-    slope=m*x+b
+    slope=m*(x-t0)+b
     
     n0=x0/sampling_time
     n1=x1/sampling_time
@@ -50,4 +50,4 @@ def remove_slope(x,y,fs,t0): #t0 is the pretrigger!
     x,slope,'g')
     show()
     
-    return m,b
+    return m,b,x0,x1
