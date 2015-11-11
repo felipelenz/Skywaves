@@ -3,6 +3,9 @@
 Created on Thu Oct  8 15:24:41 2015
 
 @author: lenz
+
+This code asks the user to select the beginning and the end of the waveform 
+then returns the the slope equation y=mx+b and the user limit inputs
 """
 import numpy as np
 from pylab import show, ginput, plot
@@ -40,7 +43,7 @@ def remove_slope(x,y,fs,t0): #t0 is the pretrigger!
     m=(y1-y0)/(x1-x0)
     b=-m*x0*y0
     
-    print('y='+str(m)+'x'+str(b))
+    print('y='+str(m)+'x+'+str(b))
     slope=m*(x-t0)+b
     
     n0=x0/sampling_time
