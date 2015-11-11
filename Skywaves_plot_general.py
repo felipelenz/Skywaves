@@ -45,20 +45,32 @@ def Natural_Skywaves(RS_time,date,fs,suffix,Horizontal_distance,x_max):
     # Read Files #
     ##############
     #import IRIG file
-    lecroy_fileName_DBY_IRIG = "/Volumes/DBY Skywaves/C2DBY0"+str(suffix)+".trc"
-    lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
-    seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
-    segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
+    if suffix>999:
+        lecroy_fileName_DBY_IRIG = "/Volumes/DBY Skywaves/C2DBY0"+str(suffix)+".trc"
+        lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
+        seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
+        segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
+    else:
+        lecroy_fileName_DBY_IRIG = "/Volumes/DBY Skywaves/C2DBY00"+str(suffix)+".trc"
+        lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
+        seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
+        segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
     
     #read IRIG file and print time stamp
     timestamp,t =IRIGA.IRIGA_signal(segments_DBY_IRIG[0], fs, year=2015)
     print(timestamp)
     
     #import skywaves data
-    lecroy_fileName_DBY = "/Volumes/DBY Skywaves/C1DBY0"+str(suffix)+".trc"
-    lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
-    seg_time_DBY = lecroy_DBY.get_seg_time()
-    segments_DBY = lecroy_DBY.get_segments()
+    if suffix>999:
+        lecroy_fileName_DBY = "/Volumes/DBY Skywaves/C1DBY0"+str(suffix)+".trc"
+        lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
+        seg_time_DBY = lecroy_DBY.get_seg_time()
+        segments_DBY = lecroy_DBY.get_segments()
+    else:
+        lecroy_fileName_DBY = "/Volumes/DBY Skywaves/C1DBY00"+str(suffix)+".trc"
+        lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
+        seg_time_DBY = lecroy_DBY.get_seg_time()
+        segments_DBY = lecroy_DBY.get_segments()
     
     print("From irig",(timestamp.second+timestamp.microsecond/1e6))
     # t0 is the zero reference point, it accounts for the input UTC time minus the 
