@@ -85,8 +85,8 @@ y=skywave
 t_max=np.argmax(y)
 y_topeak=y[0:t_max]
 
-noise_window=y[0:500]
-yoffset=np.mean(y[0:500])
+noise_window=y[0:1200]
+yoffset=np.mean(y[0:1200])
 sigma=np.std(noise_window)
 mean=np.mean(noise_window)
 
@@ -96,7 +96,13 @@ print('GW Start=%r'%min_time)
 
 
 plt.figure(figsize=(11,8.5))
-plt.plot(time,skywave-slope+slope0+yoffset,linewidth=2.0)
+plt.plot(time,skywave-slope+slope0,linewidth=2.0)
+plt.xlim(x0,xf)
+plt.show()
+
+var = input('Please manual offset: ')
+plt.figure(figsize=(11,8.5))
+plt.plot(time,skywave-slope+slope0-float(var),linewidth=2.0)
 plt.plot([min_time,min_time],[-2,2],'--',linewidth=2.0) #beginning time
 plt.plot([min_time+dt_70km,min_time+dt_70km],[-2,2],'--',linewidth=2.0) #70 km iono
 plt.plot([min_time+dt_80km,min_time+dt_80km],[-2,2],'--',linewidth=2.0) #80 km iono
