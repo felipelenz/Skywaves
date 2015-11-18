@@ -108,4 +108,4 @@ def Natural_Skywaves(RS_time,date,fs,suffix,Horizontal_distance,x_max):
 #    plt.xlim(0,x_max)
 #    plt.show()
 
-    return time, skywave,UTC_time,t0
+    return time, skywave,UTC_time,t0,timestamp
