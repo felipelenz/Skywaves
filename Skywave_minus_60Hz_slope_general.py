@@ -21,13 +21,13 @@ x_max=0.3
 
 
 ## Input Parameters ##
-RS_time=47.1#From NLDN
+RS_time=12.4#From NLDN
 date=11072015
 fs=10e6
-suffix=1211
-DBY_station=(28.462991, -80.707441) #Latitude, Longitude
-NLDN_flash=(27.681,-81.919) #From NLDN
-Peak_Current=-30 #From NLDN
+suffix=2588
+DBY_station=(0,0)#(28.462991, -80.707441) #Latitude, Longitude
+NLDN_flash=(1,0)#(29.119,-80.122) #From NLDN
+Peak_Current=-24#From NLDN
 
 # Code starts here
 Horizontal_Distance=great_circle(DBY_station, NLDN_flash).meters
@@ -44,15 +44,31 @@ print("70km = %r, 80 km = %r, 90 km = %r (in microseconds)"
 
 # The logic below is necessary to account for the horizontal angle between
 # the antenna and the NLDN reported latitude and Longitude
-
+# North is 0 deg, East is 90 deg, South is 180 deg and West is 270 deg
+# NE Quadrant
 if NLDN_flash[0]>DBY_station[0] and NLDN_flash[1]>DBY_station[1]:
-    angle=np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
-elif NLDN_flash[0]>DBY_station[0] and NLDN_flash[1]<DBY_station[1]:
-    angle=np.pi+np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
-elif NLDN_flash[0]<DBY_station[0] and NLDN_flash[1]<DBY_station[1]:
-    angle=np.pi+np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
+    angle=np.pi/2-np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
+# SE Quadrant
 elif NLDN_flash[0]<DBY_station[0] and NLDN_flash[1]>DBY_station[1]:
-    angle=2*np.pi+np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
+    angle=np.pi/2-np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
+# SW Quadrant
+elif NLDN_flash[0]<DBY_station[0] and NLDN_flash[1]<DBY_station[1]:
+    angle=3*np.pi/2-np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
+# NW Quadrant
+elif NLDN_flash[0]>DBY_station[0] and NLDN_flash[1]<DBY_station[1]:
+    angle=3*np.pi/2-np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
+# North
+elif NLDN_flash[0]>DBY_station[0] and NLDN_flash[1]==DBY_station[1]:
+    angle=0
+# East    
+elif NLDN_flash[0]==DBY_station[0] and NLDN_flash[1]>DBY_station[1]:
+    angle=np.pi/2
+# South
+elif NLDN_flash[0]<DBY_station[0] and NLDN_flash[1]==DBY_station[1]:
+    angle=np.pi
+# West
+elif NLDN_flash[0]==DBY_station[0] and NLDN_flash[1]<DBY_station[1]:
+    angle=3*np.pi/2
 
 angle_deg=angle*180/np.pi
 angle_deg=int(angle_deg*10)/10
@@ -88,7 +104,7 @@ yoffset=np.mean(y[0:1200])
 sigma=np.std(noise_window)
 mean=np.mean(noise_window)
 
-min_ind=np.argmax(np.abs(1.0/((mean+5*sigma)-y_topeak)))   
+min_ind=np.argmax(np.abs(1.0/((mean+3*sigma)-y_topeak)))   
 min_time=min_ind/fs
 print('GW Start=%r'%min_time)
 
