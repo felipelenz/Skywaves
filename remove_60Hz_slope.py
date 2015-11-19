@@ -11,12 +11,15 @@ import numpy as np
 from pylab import show, ginput, plot
 import matplotlib.pyplot as plt
 
-def remove_slope(x,y,fs,t0): #t0 is the pretrigger! 
+def remove_slope(x,y,fs): 
     fig=plt.figure()
     ax=fig.add_subplot(111)
     
     
     ax.plot(x,y)
+    plt.title('Zoom in and click at the start '
+              'and the end of the waveform. \n'
+              'Close window after clicking the two points')
     temp=[]
     
     def onclick(event):
@@ -44,13 +47,15 @@ def remove_slope(x,y,fs,t0): #t0 is the pretrigger!
     b=-m*x0*y0
     
     print('y='+str(m)+'x+'+str(b))
-    slope=m*(x-t0)+b
-    
+    slope=m*(x-x0)+b
+     
     n0=x0/sampling_time
     n1=x1/sampling_time
+    slope0=slope[n0] 
     plot(x,y, 'b', \
     [x[n0],x[n1]],[y[n0],y[n1]], 'or', \
     x,slope,'g')
+  
     show()
     
-    return m,b,x0,x1
+    return m,b,x0,x1,slope0
