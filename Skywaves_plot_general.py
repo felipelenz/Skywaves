@@ -46,66 +46,58 @@ def Natural_Skywaves(RS_time,date,fs,suffix,Horizontal_distance,x_max):
     ##############
     #import IRIG file
     if suffix>999:
-        lecroy_fileName_DBY_IRIG = "/Volumes/DBY Skywaves/C2DBY0"+str(suffix)+".trc"
+        lecroy_fileName_DBY_IRIG="/Volumes/DBY Skywaves/C2DBY0"+str(suffix)+".trc"
         lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
-        seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
+#        seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
         segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
     else:
-        lecroy_fileName_DBY_IRIG = "/Volumes/DBY Skywaves/C2DBY00"+str(suffix)+".trc"
+        lecroy_fileName_DBY_IRIG="/Volumes/DBY Skywaves/C2DBY00"+str(suffix)+".trc"
         lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
-        seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
+#        seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
         segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
     
     #read IRIG file and print time stamp
-    timestamp,t =IRIGA.IRIGA_signal(segments_DBY_IRIG[0], fs, year=2015)
+    timestamp,t = IRIGA.IRIGA_signal(segments_DBY_IRIG[0], fs, year=2015)
     print(timestamp)
     
     #import skywaves data
     if suffix>999:
         lecroy_fileName_DBY = "/Volumes/DBY Skywaves/C1DBY0"+str(suffix)+".trc"
         lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
-        seg_time_DBY = lecroy_DBY.get_seg_time()
+#        seg_time_DBY = lecroy_DBY.get_seg_time()
         segments_DBY = lecroy_DBY.get_segments()
     else:
-        lecroy_fileName_DBY = "/Volumes/DBY Skywaves/C1DBY00"+str(suffix)+".trc"
+        lecroy_fileName_DBY="/Volumes/DBY Skywaves/C1DBY00"+str(suffix)+".trc"
         lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
-        seg_time_DBY = lecroy_DBY.get_seg_time()
+#        seg_time_DBY = lecroy_DBY.get_seg_time()
         segments_DBY = lecroy_DBY.get_segments()
     
-    print("From irig",(timestamp.second+timestamp.microsecond/1e6))
-    # t0 is the zero reference point, it accounts for the input UTC time minus the 
-    # beginning of the IRIG file plus the propagation delay from the lightning to 
-    # the DBY station (this comes from NLDN)
-    t0=RS_time-(timestamp.second+timestamp.microsecond/1e6)+Horizontal_distance/2.99e8
+    # This is the time reported by NLDN that we are trying to find 
+    # in the data file
+    NLDN_time=RS_time-(timestamp.second+timestamp.microsecond/1e6)
     
-    # round it to the nearest nanosecond
-    t0=round(t0*1e9)/1e9
+    # The time below should coincide with the rising edge of the ground
+    # wave reported by NLDN. However, the NLDN time resolution is in the 
+    # order of 100s of ms, so the ground wave might actually be 100 ms
+    # to the right or to the left of the GW_time_at_antenna
+    GW_time_at_antenna=NLDN_time+Horizontal_distance/2.99e8
     
-    # This is the end of the skywave (500 us after t0)
-    tf=t0+x_max
-    n0=int(t0*fs)
-    nf=int(tf*fs)
-        
-    #plt.plot([0,0],[-1,1],t[n0:nf]-t0,segments_DBY[0][n0:nf])
-    #plt.xlabel('UTC Time in seconds after '+str(timestamp.hour)+':'+str(timestamp.minute)+':'+str(round((timestamp.second+timestamp.microsecond/1e6+t0)*1e9)/1e9))
-    #plt.xlim(0,x_max)
-    #plt.title("Date: "+str(date) )
-    #plt.grid()
-    #plt.show()
-        
-    seconds=(round((timestamp.second+timestamp.microsecond/1e6+t0)*1e9)/1e9)
-    UTC_time= "%r:%r:%r" %(timestamp.hour,timestamp.minute,seconds)
-    
-    # Rename variables to filter nmore easily
-    skywave=segments_DBY[0][n0:nf];
-    time=t[n0:nf]-t0;
-     
-    ##chop lists
-    #time=time[0:int((x_max)*fs)]
-    #skywave=skywave[0:int((x_max)*fs)]
-    
-#    plt.plot(time,skywave)
-#    plt.xlim(0,x_max)
-#    plt.show()
+    plt.plot(t,segments_DBY[0],'r')    
+    plt.plot([NLDN_time,NLDN_time],[-1,1])
+    plt.plot([GW_time_at_antenna,GW_time_at_antenna],[-1,1])
+    plt.plot([GW_time_at_antenna+100e-3,GW_time_at_antenna+100e-3],[-1,1],'--')
+    plt.plot([GW_time_at_antenna-100e-3,GW_time_at_antenna-100e-3],[-1,1],'--')
+    UTC_time= "%r:%r:%r" %(timestamp.hour,timestamp.minute,\
+                           timestamp.second+timestamp.microsecond/1e6)
+    plt.xlabel("Time in seconds after "+str(UTC_time))
+    plt.title('Complete 200 ms file the ground wave \n'
+               'should be around the solid line')
+    plt.show()
 
-    return time, skywave,UTC_time,t0,timestamp
+    t0=GW_time_at_antenna
+              
+    # Rename variables to filter nmore easily
+    skywave=segments_DBY[0];
+    time=t;
+
+    return time,skywave,UTC_time,t0,timestamp
