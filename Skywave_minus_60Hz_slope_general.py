@@ -14,7 +14,6 @@ from geopy.distance import great_circle
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib
-#from pylab import *
 matplotlib.rcParams.update({'font.size': 16})
 
 x_min=0*1e6
@@ -26,7 +25,7 @@ RS_time=47.1#From NLDN
 date=11072015
 fs=10e6
 suffix=1211
-DBY_station=(28.462991, -80.707441)
+DBY_station=(28.462991, -80.707441) #Latitude, Longitude
 NLDN_flash=(27.681,-81.919) #From NLDN
 Peak_Current=-30 #From NLDN
 
@@ -34,14 +33,17 @@ Peak_Current=-30 #From NLDN
 Horizontal_Distance=great_circle(DBY_station, NLDN_flash).meters
 Horizontal_Distance_km=Horizontal_Distance/1000
 
-RS_time=RS_time+Horizontal_Distance/2.99e8
-print('RS_time=%r' %RS_time)
-
 distance=Horizontal_Distance_km
-dt_70km=(2*np.sqrt(70*70+(distance/2)*(distance/2))-distance)/2.99e5 #time delay of the first skywave for ionospheric reflection height=70km
-dt_80km=(2*np.sqrt(80*80+(distance/2)*(distance/2))-distance)/2.99e5 #time delay of the first skywave for ionospheric reflection height=80km
-dt_90km=(2*np.sqrt(90*90+(distance/2)*(distance/2))-distance)/2.99e5 #time delay of the first skywave for ionospheric reflection height=90km
-print("70km = %r, 80 km = %r, 90 km = %r (in microseconds)"%(dt_70km*1e6,dt_80km*1e6,dt_90km*1e6))
+# Time delay of the first skywave for three ionospheric reflection heights:
+# 70 km, 80 km, and 90 km
+dt_70km=(2*np.sqrt(70*70+(distance/2)*(distance/2))-distance)/2.99e5 
+dt_80km=(2*np.sqrt(80*80+(distance/2)*(distance/2))-distance)/2.99e5 
+dt_90km=(2*np.sqrt(90*90+(distance/2)*(distance/2))-distance)/2.99e5
+print("70km = %r, 80 km = %r, 90 km = %r (in microseconds)"
+      %(dt_70km*1e6,dt_80km*1e6,dt_90km*1e6))
+
+# The logic below is necessary to account for the horizontal angle between
+# the antenna and the NLDN reported latitude and Longitude
 
 if NLDN_flash[0]>DBY_station[0] and NLDN_flash[1]>DBY_station[1]:
     angle=np.arctan((NLDN_flash[0]-DBY_station[0])/(NLDN_flash[1]-DBY_station[1]))
@@ -54,33 +56,29 @@ elif NLDN_flash[0]<DBY_station[0] and NLDN_flash[1]>DBY_station[1]:
 
 angle_deg=angle*180/np.pi
 angle_deg=int(angle_deg*10)/10
-print("angle= %f degrees" %angle_deg )
+print("Horizontal angle= %f degrees" %angle_deg )
 print("Distance from the flash= %f km" %Horizontal_Distance_km)
 
-Horizontal_Distance=0
-time,skywave,UTC_time,t0,initial_timestamp=Natural_Skywaves(RS_time,date,fs,suffix,Horizontal_Distance,x_max)
-print(UTC_time)
-m,b,x0,xf,slope0=remove_slope(time,skywave,fs,t0)
+parameter=Natural_Skywaves(RS_time,date,fs,suffix,Horizontal_Distance,x_max)
+time=parameter[0]
+skywave=parameter[1]
+UTC_time=parameter[2]
+t0=parameter[3]
+initial_timestamp=parameter[4]
 
-#
-### Remove 60 Hz slope ##
-#x0=time[0]
-#x1=time[-1] #500 us  = 5000 samples at 10MHz fs
-#    
-#y0=skywave[0]
-#y1=skywave[-1] 
-#m=(y1-y0)/(x1-x0)
-#b=-m*x0*y0
-        
+m,b,x0,xf,slope0=remove_slope(time,skywave,fs)
+
+
 slope=m*time+b #y=mx+b
-slope
 
 ##sine=-0.2*np.sin(2*np.pi*59.5*time)
 #plt.figure(figsize=(11,8.5))
 #plt.plot(time,skywave+yoffset,linewidth=2.0)
 ##plt.plot(time,sine,'r',linewidth=2.0)
 ##plt.plot(time*1e6,yoffset,linewidth=2.0)
-y=skywave
+
+print("index0 = %r, indexf = %r" %(x0*fs,x0*fs))
+y=skywave[x0*fs:xf*fs]
 
 t_max=np.argmax(y)
 y_topeak=y[0:t_max]
@@ -91,27 +89,33 @@ sigma=np.std(noise_window)
 mean=np.mean(noise_window)
 
 min_ind=np.argmax(np.abs(1.0/((mean+5*sigma)-y_topeak)))   
-min_time=min_ind/fs+x0
+min_time=min_ind/fs
 print('GW Start=%r'%min_time)
 
-
+time=time-x0
 plt.figure(figsize=(11,8.5))
-plt.plot(time,skywave-slope+slope0,linewidth=2.0)
-plt.xlim(x0,xf)
+plt.plot(time,skywave-slope-slope0,linewidth=2.0)
+plt.xlim(x0-x0,xf-x0)
 plt.show()
 
 var = input('Please manual offset: ')
 plt.figure(figsize=(11,8.5))
-plt.plot(time,skywave-slope+slope0-float(var),linewidth=2.0)
-plt.plot([min_time,min_time],[-2,2],'--',linewidth=2.0) #beginning time
-plt.plot([min_time+dt_70km,min_time+dt_70km],[-2,2],'--',linewidth=2.0) #70 km iono
-plt.plot([min_time+dt_80km,min_time+dt_80km],[-2,2],'--',linewidth=2.0) #80 km iono
-plt.plot([min_time+dt_90km,min_time+dt_90km],[-2,2],'--',linewidth=2.0) #90 km iono
+plt.plot(time,skywave-slope-slope0-float(var),linewidth=2.0)
+plt.plot([min_time,min_time],[-20,20],'--',linewidth=2.0) #beginning time
+plt.plot([min_time+dt_70km,min_time+dt_70km],[-20,20],'--',linewidth=2.0) #70 km iono
+plt.plot([min_time+dt_80km,min_time+dt_80km],[-20,20],'--',linewidth=2.0) #80 km iono
+plt.plot([min_time+dt_90km,min_time+dt_90km],[-20,20],'--',linewidth=2.0) #90 km iono
 
-plt.title("File# "+str(suffix)+" Date: "+str(date)+" \n Horizontal Distance= "+str(int(Horizontal_Distance_km))+" km, angle= "+str(angle_deg)+" deg \n Peak Current= "+str(Peak_Current)+" kA")
+plt.title("File# "+str(suffix)+" Date: "+str(date)+" \n Horizontal Distance= "
+          +str(int(Horizontal_Distance_km))+" km, angle= "+str(angle_deg)
+          +" deg \n Peak Current= "+str(Peak_Current)+" kA")
 plt.xlabel("UTC Time in seconds after %s" %UTC_time)
 plt.grid()
-plt.xlim(x0,xf)
+plt.xlim(x0-x0,xf-x0)
 plt.tight_layout()
-plt.savefig('File#'+str(suffix)+' Date= '+str(date)+' (Lat '+str(NLDN_flash[0])+',Long '+str(NLDN_flash[1])+')D= '+str(int(Horizontal_Distance_km))+' km, angle= '+str(angle_deg)+' deg, Peak Current= '+str(Peak_Current)+' kA.pdf', dpi = 300)
+plt.savefig('File#'+str(suffix)+' Date= '+str(date)
+            +' (Lat '+str(NLDN_flash[0])+',Long '+str(NLDN_flash[1])
+            +')D= '+str(int(Horizontal_Distance_km))+' km, angle= '
+            +str(angle_deg)+' deg, Peak Current= '
+            +str(Peak_Current)+' kA.pdf', dpi = 300)
 plt.show()
