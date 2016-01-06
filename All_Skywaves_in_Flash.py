@@ -7,10 +7,12 @@ Created on Mon Oct 26 15:12:02 2015
 
 from Skywaves_plot_with_IRIG_LPF import Skywave
 import matplotlib.pyplot as plt
-import lecroy as lc
 import numpy as np
 import matplotlib
 matplotlib.rcParams.update({'font.size': 22})
+
+date=82715
+calfactor=19900.50
 
 x_min=0*1e6
 x_max=0.00050*1e6
@@ -20,7 +22,7 @@ dt_70km=(2*np.sqrt(70*70+(distance/2)*(distance/2))-distance)/2.99e5 #time delay
 dt_80km=(2*np.sqrt(80*80+(distance/2)*(distance/2))-distance)/2.99e5 #time delay of the first skywave for ionospheric reflection height=80km
 dt_90km=(2*np.sqrt(90*90+(distance/2)*(distance/2))-distance)/2.99e5 #time delay of the first skywave for ionospheric reflection height=90km
 
-##UF 15-38
+#UF 15-38, RS#1
 #moving_avg=Skywave(38,1,26.522908895,8,x_max)
 #waveform=moving_avg[1][10:-10]
 #yoffset=np.mean(waveform[0:800])
@@ -32,10 +34,12 @@ dt_90km=(2*np.sqrt(90*90+(distance/2)*(distance/2))-distance)/2.99e5 #time delay
 #plt.plot([(moving_avg[5]+dt_90km)*1e6,(moving_avg[5]+dt_90km)*1e6],[-.2,1.2],'--',linewidth=2.0) #time for 90 km h iono
 #plt.ylim(-0.1,0.66)
 
+
 #moving_avg=Skywave(38,2,26.579535265,8,x_max)
 #waveform=moving_avg[1][10:-10]
 #yoffset=np.mean(waveform[0:800])
 #t_start=moving_avg[5]*1e6
+#
 #plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,label="UF 15-38, RS#2, Peak Current = 21.5 kA",linewidth=2.0) #moving averaged skywave
 #plt.plot([moving_avg[5]*1e6,moving_avg[5]*1e6],[-.2,1.2],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
 #plt.plot([(moving_avg[5]+dt_70km)*1e6,(moving_avg[5]+dt_70km)*1e6],[-.2,1.2],'--',linewidth=2.0) #time for 70 km h iono
@@ -270,47 +274,23 @@ dt_90km=(2*np.sqrt(90*90+(distance/2)*(distance/2))-distance)/2.99e5 #time delay
 #plt.plot([(moving_avg[5]+dt_90km)*1e6,(moving_avg[5]+dt_90km)*1e6],[-.2,1.2],'--',linewidth=2.0) #time for 90 km h iono
 #plt.ylim(-0.08,0.55)
 
-#Plot channel-base current
-date=82715
-suffix26=5
-seg=3
-calfactor=19900.50
-lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
-                        str(suffix26)+".trc"
-lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
-IIHI_time = lecroy_IIHI.get_seg_time()
-IIHI = lecroy_IIHI.get_segments()
-plt.subplot(121)
-plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-plt.xlabel("Time ($\mu$s)")
-plt.ylabel("Channel--base Current (kA)")
-plt.xlim(0,500)
-plt.ylim(-2,22)
-plt.grid()
-plt.title("UF 15-43, RS#4, Peak Current = 20.5 kA")
-
-#plot E-field data from DBY station
+#UF 15-43, RS#4
 moving_avg=Skywave(43,4,23.293418545,13,x_max)
 waveform=moving_avg[1][10:-10]
 yoffset=np.mean(waveform[0:800])
 t_start=moving_avg[5]*1e6
-
-plt.subplot(122)
 plt.plot(moving_avg[0][10:-10]*1e6,moving_avg[1][10:-10]-yoffset,label="UF 15-43, RS#4, Peak Current = 20.5 kA",linewidth=2.0) #moving averaged skywave
 #The next line plots the flipped waveform with the peaks alligned. We do this
 # to see if any of the wave characteristics of the GW and IR align well
 #plt.plot(moving_avg[0][10:-10]*1e6+250-53,-(moving_avg[1][10:-10]-yoffset),linewidth=2.0)
-
 plt.plot([moving_avg[5]*1e6,moving_avg[5]*1e6],[-.2,1.2],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-
 plt.plot([(moving_avg[5]+dt_70km)*1e6,(moving_avg[5]+dt_70km)*1e6],[-.2,1.2],'--',linewidth=2.0) #time for 70 km h iono
 plt.plot([(moving_avg[5]+dt_80km)*1e6,(moving_avg[5]+dt_80km)*1e6],[-.2,1.2],'--',linewidth=2.0) #time for 80 km h iono
 plt.plot([(moving_avg[5]+dt_90km)*1e6,(moving_avg[5]+dt_90km)*1e6],[-.2,1.2],'--',linewidth=2.0) #time for 90 km h iono
-plt.ylabel("E-field (arb. units) \n measured 209 km SE of ICLRT")
 plt.ylim(-0.15,0.75)
 
 plt.xlim(x_min,x_max)
 plt.grid()
-#plt.legend()
+plt.legend()
 plt.xlabel("Time ($\mu$s)")
 plt.show()
