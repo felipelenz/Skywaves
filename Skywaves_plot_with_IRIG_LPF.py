@@ -65,7 +65,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     seg_time_DBY = lecroy_DBY.get_seg_time()
     segments_DBY = lecroy_DBY.get_segments()
     
-    t0=RS_time-(timestamp.second+timestamp.microsecond/1e6)+180e3/2.99e8
+    t0=RS_time-(timestamp.second+timestamp.microsecond/1e6)+180e3/2.99e8 #180 km
     t0=round(t0*1e9)/1e9
     tf=t0+0.5
     n0=int((t0-0.5)*fs)
@@ -77,7 +77,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     #plt.grid()
     #plt.show()
     seconds=(round((timestamp.second+timestamp.microsecond/1e6+t0)*1e9)/1e9)
-    UTC_time= "%r:%r:%r" %(timestamp.hour,timestamp.minute,seconds)
+#    UTC_time= "%r:%r:%r" %(timestamp.hour,timestamp.minute,seconds)
     
     skywave=segments_DBY[0][n0:nf];
     time=t[n0:nf]-t0;
@@ -162,15 +162,15 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     # Measure Risetime #
     ####################
     def noise_analysis(x,y,fs,t0):
-        
 #        plot(x,y)
 #        print("Please click")
 #        xx = ginput(3)
         xx=[0,0.00008,0.000095] #just for this application! 
         sampling_time=1/fs
+
         t0_noise=np.int(xx[0]/sampling_time)-t0/sampling_time #xx[0][0] when ginput is being used
         tf_noise=np.int(xx[1]/sampling_time)-t0/sampling_time #xx[1][0] when ginput is being used
-        t_end=np.int(xx[2]/sampling_time)-t0/sampling_time #xx[2][0] when ginput is being used
+        t_end=np.int(xx[2]/sampling_time)-t0/sampling_time #xx[2][0] when ginput is being used        
 #        show()  
         
         t_max=np.argmax(y[0:t_end])
@@ -201,20 +201,22 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
 #        [x[min_ind],x[ten_percent_ind],x[ninety_percent_ind]],[y[min_ind],y[ten_percent_ind],y[ninety_percent_ind]], 'or')
 #        show()
         
-        return risetime_90_10_time,ten_percent_ind,min_ind,y_ampl,twenty_percent_ind,fifty_percent_ind,eighty_percent_ind,ninety_percent_ind,risetime_90_10
+        return risetime_90_10_time,ten_percent_ind,min_ind,y_ampl,mean,twenty_percent_ind,fifty_percent_ind,eighty_percent_ind,ninety_percent_ind,risetime_90_10
         
 #    time2=time-group_delay
 #    LPF_skywave = noise_analysis(time2,filtered_skywave,10e6,0)
 #    print("LPF 10-90 risetime = %r" %LPF_skywave[0])
 #    
-    MovAvg_skywave = noise_analysis(time,avg_skywave,10e6,0)
+    MovAvg_skywave = noise_analysis(time,avg_skywave,10e6,0) 
     risetime_10_90=MovAvg_skywave[0]
     ten_percent_level=MovAvg_skywave[1]*(1/fs)
     ground_wave_start=MovAvg_skywave[2]*(1/fs)
     ground_wave_ampl=MovAvg_skywave[3]
+    min_ampl=MovAvg_skywave[4]
     print("Moving Average 10-90 risetime = %r" %MovAvg_skywave[0])
     
+    UTC_time= "%r:%r:%r" %(timestamp.hour,timestamp.minute,seconds-ground_wave_start)
 #    unfiltered = noise_analysis(time,skywave,10e6,0)
 #    print("Unfiltered 10-90 risetime = %r" %unfiltered[0])
 
-    return time, avg_skywave, UTC_time,risetime_10_90,ten_percent_level,ground_wave_start,ground_wave_ampl
+    return time, avg_skywave, UTC_time,risetime_10_90,ten_percent_level,ground_wave_start,ground_wave_ampl,min_ampl
