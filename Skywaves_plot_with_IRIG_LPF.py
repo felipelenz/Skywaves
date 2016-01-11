@@ -215,7 +215,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     min_ampl=MovAvg_skywave[4]
     print("Moving Average 10-90 risetime = %r" %MovAvg_skywave[0])
     
-    UTC_time= "%r:%r:%r" %(timestamp.hour,timestamp.minute,seconds-ground_wave_start)
+    UTC_time= "%r:%r:%12.9f" %(timestamp.hour,timestamp.minute,seconds-ground_wave_start)
 #    unfiltered = noise_analysis(time,skywave,10e6,0)
 #    print("Unfiltered 10-90 risetime = %r" %unfiltered[0])
 
