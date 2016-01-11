@@ -4,10 +4,9 @@ Created on Mon Sep 28 14:56:12 2015
 
 @author: lenz
 This code plots the skywaves associated with the biggest currents for 6
-events. Skywave_plot_with_IRIG_LPF returns: moving_avg[0] (time list), 
-moving_avg[1] (filtered skywave (moving average) list) and moving_avg[2] 
-(UTC_time string), risetime_10_90, ten_percent_level, ground_wave_start,
-ground_wave_ampl, and min_ampl
+events with the peak of the ground waves set to t=0. If adjust_peaks_in_time
+is set to 0, the GWs are aligned in time t=0 for when the e-field raises above
+4 sigma of the noise window
 
 [10:-10] is added when plotting to avoid showing the overshoot at the ends of
 the waveforms causeed by the moving average filter
@@ -60,12 +59,15 @@ t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
 t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
 adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
 
-t_min=(np.argmin(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find IR min 
-print("IR min = %r",t_min)
+#y=waveform-modified_yoffset[10:4990]
+#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
+#t_min=t_min-t_start+first_time
+#print("IR min = ",t_min)
 
 plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
          waveform-modified_yoffset[10:4990],\
          linewidth=2.0,color=[0,0,1],label="UF 15-38, RS#2") #moving averaged skywave
+
 
 #UF 15-39. RS#1
 moving_avg=Skywave(39,1,66.583436840,9,x_max)
@@ -79,8 +81,10 @@ t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
 t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
 adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
 
-t_min=(np.argmin(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find IR min 
-print("IR min = %r",t_min)
+#y=waveform-modified_yoffset[10:4990]
+#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
+#t_min=t_min-t_start+first_time
+#print("IR min = ",t_min)
 
 plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
          waveform-modified_yoffset[10:4990],\
@@ -98,8 +102,10 @@ t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
 t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
 adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
 
-t_min=(np.argmin(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find IR min 
-print("IR min = %r",t_min)
+#y=waveform-modified_yoffset[10:4990]
+#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
+#t_min=t_min-t_start+first_time
+#print("IR min = ",t_min)
 
 plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
          waveform-modified_yoffset[10:4990],\
@@ -117,8 +123,10 @@ t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
 t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
 adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
 
-t_min=(np.argmin(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find IR min 
-print("IR min = %r",t_min)
+#y=waveform-modified_yoffset[10:4990]
+#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
+#t_min=t_min-t_start+first_time
+#print("IR min = ",t_min)
 
 plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
          waveform-modified_yoffset[10:4990],\
@@ -136,8 +144,10 @@ t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
 t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
 adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
 
-t_min=(np.argmin(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find IR min 
-print("IR min = %r",t_min)
+#y=waveform-modified_yoffset[10:4990]
+#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
+#t_min=t_min-t_start+first_time
+#print("IR min = ",t_min)
 
 plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
          waveform-modified_yoffset[10:4990],\
@@ -155,8 +165,10 @@ t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
 t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
 adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
 
-t_min=(np.argmin(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find IR min 
-print("IR min = %r",t_min)
+#y=waveform-modified_yoffset[10:4990]
+#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
+#t_min=t_min-t_start+first_time
+#print("IR min = ",t_min)
 
 plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
          waveform-modified_yoffset[10:4990],\
