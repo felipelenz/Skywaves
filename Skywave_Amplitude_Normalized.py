@@ -29,7 +29,7 @@ distance=208.9 #kilometers
 dt_70km=(2*np.sqrt(70*70+(distance/2)*(distance/2))-distance)/2.99e5 #time delay of the first skywave for ionospheric reflection height=70km
 dt_80km=(2*np.sqrt(80*80+(distance/2)*(distance/2))-distance)/2.99e5 #time delay of the first skywave for ionospheric reflection height=80km
 dt_90km=(2*np.sqrt(90*90+(distance/2)*(distance/2))-distance)/2.99e5 #time delay of the first skywave for ionospheric reflection height=90km
-print("70km = %r, 80 km = %r, 90 km = %r (in microseconds)"%(dt_70km*1e6,dt_80km*1e6,dt_90km*1e6))
+print("70km = %5.2f, 80 km = %5.2f, 90 km = %5.2f (in microseconds)"%(dt_70km*1e6,dt_80km*1e6,dt_90km*1e6))
 
 # Remove 60 Hz slope ##                  
 def remove_60Hz_slope(moving_avg,yoffset):
@@ -47,132 +47,52 @@ def remove_60Hz_slope(moving_avg,yoffset):
     
     return modified_yoffset
 
+def process_and_plot(moving_avg):
+    waveform=moving_avg[1][10:4990] #500 us of e-field data
+    first_time=moving_avg[0][10]*1e6 #first sample of the waveform above
+    yoffset=np.mean(waveform[0:800]) #find the DC offset during noise window
+    
+    modified_yoffset=remove_60Hz_slope(moving_avg, yoffset) #remove 60Hz slope
+
+    t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
+    t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
+    adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
+    
+    time_list=moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time
+    data_list=waveform-modified_yoffset[10:4990]
+    
+    return time_list, data_list, t_start
+    
 #UF 15-38. RS#2
 moving_avg=Skywave(38,2,26.579535265,8,x_max)
-waveform=moving_avg[1][10:4990] #500 us of e-field data
-first_time=moving_avg[0][10]*1e6 #first sample of the waveform above
-yoffset=np.mean(waveform[0:800]) #find the DC offset during noise window
-
-modified_yoffset=remove_60Hz_slope(moving_avg, yoffset) #remove 60Hz slope
-
-t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
-t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
-adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
-
-#y=waveform-modified_yoffset[10:4990]
-#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
-#t_min=t_min-t_start+first_time
-#print("IR min = ",t_min)
-
-plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
-         waveform-modified_yoffset[10:4990],\
-         linewidth=2.0,color=[0,0,1],label="UF 15-38, RS#2") #moving averaged skywave
-
-
+time, data, t_start = process_and_plot(moving_avg)
+plt.plot(time,data,linewidth=2.0,color=[0,0,1],label="UF 15-38, RS#2") #moving averaged skywave
+    
 #UF 15-39. RS#1
 moving_avg=Skywave(39,1,66.583436840,9,x_max)
-waveform=moving_avg[1][10:4990] #500 us of e-field data
-first_time=moving_avg[0][10]*1e6 #first sample of the waveform above
-yoffset=np.mean(waveform[0:800]) #find the DC offset during noise window
-
-modified_yoffset=remove_60Hz_slope(moving_avg, yoffset) #remove 60Hz slope
-
-t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
-t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
-adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
-
-#y=waveform-modified_yoffset[10:4990]
-#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
-#t_min=t_min-t_start+first_time
-#print("IR min = ",t_min)
-
-plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
-         waveform-modified_yoffset[10:4990],\
-         linewidth=2.0,color=[1/6,5/6,1],label="UF 15-39, RS#1") #moving averaged skywave
+time, data, t_start = process_and_plot(moving_avg)
+plt.plot(time,data,linewidth=2.0,color=[1/6,5/6,1],label="UF 15-39, RS#1") #moving averaged skywave
 
 #UF15-40, RS#3
 moving_avg=Skywave(40,3,20.767465080,10,x_max)
-waveform=moving_avg[1][10:4990] #500 us of e-field data
-first_time=moving_avg[0][10]*1e6 #first sample of the waveform above
-yoffset=np.mean(waveform[0:800]) #find the DC offset during noise window
-
-modified_yoffset=remove_60Hz_slope(moving_avg, yoffset) #remove 60Hz slope
-
-t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
-t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
-adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
-
-#y=waveform-modified_yoffset[10:4990]
-#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
-#t_min=t_min-t_start+first_time
-#print("IR min = ",t_min)
-
-plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
-         waveform-modified_yoffset[10:4990],\
-         linewidth=2.0,color=[2/6,4/6,1],label="UF 15-40, RS#3")
+time, data, t_start = process_and_plot(moving_avg)
+plt.plot(time,data,linewidth=2.0,color=[2/6,4/6,1],label="UF 15-40, RS#3")
 
 #UF 15-41, RS#1
 moving_avg=Skywave(41,1,57.298446790,11,x_max)
-waveform=moving_avg[1][10:4990] #500 us of e-field data
-first_time=moving_avg[0][10]*1e6 #first sample of the waveform above
-yoffset=np.mean(waveform[0:800]) #find the DC offset during noise window
-
-modified_yoffset=remove_60Hz_slope(moving_avg, yoffset) #remove 60Hz slope
-
-t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
-t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
-adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
-
-#y=waveform-modified_yoffset[10:4990]
-#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
-#t_min=t_min-t_start+first_time
-#print("IR min = ",t_min)
-
-plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
-         waveform-modified_yoffset[10:4990],\
-         linewidth=2.0,color=[3/6,3/6,1],label="UF 15-41, RS#1")
+time, data, t_start = process_and_plot(moving_avg)
+plt.plot(time,data,linewidth=2.0,color=[3/6,3/6,1],label="UF 15-41, RS#1")
 
 #UF 15-42, RS#4
 moving_avg=Skywave(42,4,43.058185590,12,x_max)
-waveform=moving_avg[1][10:4990] #500 us of e-field data
-first_time=moving_avg[0][10]*1e6 #first sample of the waveform above
-yoffset=np.mean(waveform[0:800]) #find the DC offset during noise window
+time, data, t_start = process_and_plot(moving_avg)
+plt.plot(time,data,linewidth=2.0,color=[4/6,2/6,1],label="UF 15-42, RS#4")
 
-modified_yoffset=remove_60Hz_slope(moving_avg, yoffset) #remove 60Hz slope
-
-t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
-t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
-adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
-
-#y=waveform-modified_yoffset[10:4990]
-#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
-#t_min=t_min-t_start+first_time
-#print("IR min = ",t_min)
-
-plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
-         waveform-modified_yoffset[10:4990],\
-         linewidth=2.0,color=[4/6,2/6,1],label="UF 15-42, RS#4")
-
-#UF 15-42, RS#4
+#UF 15-43, RS#4
 moving_avg=Skywave(43,4,23.293418545,13,x_max)
-waveform=moving_avg[1][10:4990] #500 us of e-field data
-first_time=moving_avg[0][10]*1e6 #first sample of the waveform above
-yoffset=np.mean(waveform[0:800]) #find the DC offset during noise window
+time, data, t_start = process_and_plot(moving_avg)
+plt.plot(time,data,linewidth=2.0,color=[5/6,1/6,1],label="UF 15-43, RS#4")
 
-modified_yoffset=remove_60Hz_slope(moving_avg, yoffset) #remove 60Hz slope
-
-t_peak=(np.argmax(waveform-modified_yoffset[10:4990]))*(1/fs)*1e6 #find GW peak
-t_start=moving_avg[5]*1e6 #This sets GW to t=0 based on 4 sigma from noise
-adjust_peaks_in_time=t_peak-t_start+first_time #This sets GW to t=0 by alligning GW peaks
-
-#y=waveform-modified_yoffset[10:4990]
-#t_min=np.argmin(y)*(1/fs)*1e6 #find IR min 
-#t_min=t_min-t_start+first_time
-#print("IR min = ",t_min)
-
-plt.plot(moving_avg[0][10:4990]*1e6-t_start-adjust_peaks_in_time,\
-         waveform-modified_yoffset[10:4990],\
-         linewidth=2.0,color=[5/6,1/6,1],label="UF 15-43, RS#4")
 plt.plot([0,0],[-1,1],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
 plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1],'--',linewidth=2.0) #time for 70 km h iono
 plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1],'--',linewidth=2.0) #time for 80 km h iono
@@ -184,7 +104,6 @@ plt.grid()
 plt.xlim(x_min-t_start,x_max-t_start)
 plt.ylim(-.15,0.95)
 plt.legend()
-
 
 plt.show()
 
