@@ -62,47 +62,68 @@ def process_and_plot(moving_avg):
     data_list=waveform-modified_yoffset[10:4990]
     
     return time_list, data_list, t_start
-    
+ 
+##UF 15-38, RS#1
+#moving_avg=Skywave(38,1,26.522908895,8,x_max)   
+#time, data, t_start = process_and_plot(moving_avg)
+#plt.plot(time,data/np.max(data),linewidth=2.0,color=[0,0,1],label="UF 15-38, RS#1") #moving averaged skywave
+
 #UF 15-38. RS#2
 moving_avg=Skywave(38,2,26.579535265,8,x_max)
 time, data, t_start = process_and_plot(moving_avg)
-plt.plot(time,data,linewidth=2.0,color=[0,0,1],label="UF 15-38, RS#2") #moving averaged skywave
+plt.plot(time,data/np.max(data),linewidth=2.0,color=[0,0,1],label="UF 15-38, RS#2") #moving averaged skywave
+
+##UF 15-38. RS#3
+#moving_avg=Skywave(38,3,26.691097980,8,x_max)
+#time, data, t_start = process_and_plot(moving_avg)
+#plt.plot(time,data/np.max(data),linewidth=2.0,color=[2/5,3/5,1],label="UF 15-38, RS#3") #moving averaged skywave
+#
+##UF 15-38. RS#4
+#moving_avg=Skywave(38,4,26.734557870,8,x_max)
+#time, data, t_start = process_and_plot(moving_avg)
+#plt.plot(time,data/np.max(data),linewidth=2.0,color=[3/5,2/5,1],label="UF 15-38, RS#4") #moving averaged skywave
+#
+##UF 15-38. RS#5
+#moving_avg=Skywave(38,5,26.764446000,8,x_max)
+#time, data, t_start = process_and_plot(moving_avg)
+#plt.plot(time,data/np.max(data),linewidth=2.0,color=[4/5,1/5,1],label="UF 15-38, RS#5") #moving averaged skywave
+
     
 #UF 15-39. RS#1
 moving_avg=Skywave(39,1,66.583436840,9,x_max)
 time, data, t_start = process_and_plot(moving_avg)
-plt.plot(time,data,linewidth=2.0,color=[1/6,5/6,1],label="UF 15-39, RS#1") #moving averaged skywave
+plt.plot(time,data/np.max(data),linewidth=2.0,color=[1/6,5/6,1],label="UF 15-39, RS#1") #moving averaged skywave
 
 #UF15-40, RS#3
 moving_avg=Skywave(40,3,20.767465080,10,x_max)
 time, data, t_start = process_and_plot(moving_avg)
-plt.plot(time,data,linewidth=2.0,color=[2/6,4/6,1],label="UF 15-40, RS#3")
+plt.plot(time,data/np.max(data),linewidth=2.0,color=[2/6,4/6,1],label="UF 15-40, RS#3")
 
 #UF 15-41, RS#1
 moving_avg=Skywave(41,1,57.298446790,11,x_max)
 time, data, t_start = process_and_plot(moving_avg)
-plt.plot(time,data,linewidth=2.0,color=[3/6,3/6,1],label="UF 15-41, RS#1")
+plt.plot(time,data/np.max(data),linewidth=2.0,color=[3/6,3/6,1],label="UF 15-41, RS#1")
 
 #UF 15-42, RS#4
 moving_avg=Skywave(42,4,43.058185590,12,x_max)
 time, data, t_start = process_and_plot(moving_avg)
-plt.plot(time,data,linewidth=2.0,color=[4/6,2/6,1],label="UF 15-42, RS#4")
+plt.plot(time,data/np.max(data),linewidth=2.0,color=[4/6,2/6,1],label="UF 15-42, RS#4")
 
 #UF 15-43, RS#4
 moving_avg=Skywave(43,4,23.293418545,13,x_max)
 time, data, t_start = process_and_plot(moving_avg)
-plt.plot(time,data,linewidth=2.0,color=[5/6,1/6,1],label="UF 15-43, RS#4")
+plt.plot(time,data/np.max(data),linewidth=2.0,color=[5/6,1/6,1],label="UF 15-43, RS#4")
 
-plt.plot([0,0],[-1,1],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1],'--',linewidth=2.0) #time for 70 km h iono
-plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1],'--',linewidth=2.0) #time for 80 km h iono
-plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1],'--',linewidth=2.0) #time for 90 km h iono
+plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
+plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
+plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
 plt.title("Ground-wave peaks are time-alligned to t=0")
 plt.xlabel("Time ($\mu$s)")
 plt.ylabel("Amplitude normalized E-field (arb. units) \n measured 209 km SE of ICLRT")
 plt.grid()
 plt.xlim(x_min-t_start,x_max-t_start)
-plt.ylim(-.15,0.95)
+plt.ylim(-.15,1.1)
 plt.legend()
 
 plt.show()
