@@ -21,13 +21,13 @@ x_max=0.3
 
 
 ## Input Parameters ##
-RS_time=12.4#From NLDN
+RS_time=31.7#From NLDN
 date=11072015
 fs=10e6
-suffix=2588
-DBY_station=(0,0)#(28.462991, -80.707441) #Latitude, Longitude
-NLDN_flash=(1,0)#(29.119,-80.122) #From NLDN
-Peak_Current=-24#From NLDN
+suffix=329
+DBY_station=(28.462991, -80.707441) #Latitude, Longitude
+NLDN_flash=(29.275,-79.647) #From NLDN
+Peak_Current=26#From NLDN
 
 # Code starts here
 Horizontal_Distance=great_circle(DBY_station, NLDN_flash).meters
@@ -99,12 +99,12 @@ y=skywave[x0*fs:xf*fs]
 t_max=np.argmax(y)
 y_topeak=y[0:t_max]
 
-noise_window=y[0:1200]
-yoffset=np.mean(y[0:1200])
+noise_window=y[0:800]
+yoffset=np.mean(y[0:800])
 sigma=np.std(noise_window)
 mean=np.mean(noise_window)
 
-min_ind=np.argmax(np.abs(1.0/((mean+3*sigma)-y_topeak)))   
+min_ind=np.argmax(np.abs(1.0/((mean+5*sigma)-y_topeak)))   
 min_time=min_ind/fs
 print('GW Start=%r'%min_time)
 
