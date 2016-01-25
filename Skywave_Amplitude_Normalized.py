@@ -78,6 +78,7 @@ def process_and_plot(moving_avg):
 moving_avg=Skywave(38,2,26.579535265,8,x_max)
 print(np.size(moving_avg))
 
+#The code belo plots Fig. 1 of the Paper
 time, data, t_start,raw_time_list,raw_data_list = process_and_plot(moving_avg)
 plt.subplot(211)
 plt.plot(raw_time_list,raw_data_list,linewidth=2.0,color=[1,0,0],label="Raw UF 15-38, RS#2")
