@@ -85,6 +85,13 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     #chop lists
     time=time[int(0.5*fs):int((x_max+0.5)*fs)]
     skywave=skywave[int(0.5*fs):int((x_max+0.5)*fs)]
+#    a=len(skywave)
+#    groundwave = skywave[1:240*fs] + [0]*(a - len(skywave[1:240*fs]))
+#    skywave = skywave[1:]-groundwave
+#    skywave=skywave[1:150*fs]+np.ones(len(skywave)-150*fs)
+#    groundwave=skywave[int(0.5*fs):int((x_max-0+0.5)*fs)]
+#    skywave=skywave[int((x_max-0+0.5)*fs):int((x_max+0.5)*fs)]
+    
     #plt.plot(time,skywave)
     #plt.xlim(0,x_max)
     #plt.show()
@@ -120,40 +127,44 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     # Filter requirements.
     order = 6
     fs = 10e6      # sample rate, Hz
-    cutoff = 0.9e6  # desired cutoff frequency of the filter, Hz
+    cutoff = 0.2e6  # desired cutoff frequency of the filter, Hz
     
     # Get the filter coefficients so we can check its frequency response.
     b, a = butter_lowpass(cutoff, fs, order)
     
-    ## Plot the frequency response.
-    #w, h = freqz(b, a, worN=8000)
-    #plt.subplot(2, 1, 1)
-    #plt.plot(0.5*fs*w/np.pi, np.abs(h), 'b')
-    #plt.plot(cutoff, 0.5*np.sqrt(2), 'ko')
-    #plt.axvline(cutoff, color='k')
-    #plt.xlim(0, 0.5*fs)
-    #plt.title("Lowpass Filter Frequency Response")
-    #plt.xlabel('Frequency [Hz]')
-    #plt.grid()
+    # Plot the frequency response.
+#    w, h = freqz(b, a, worN=8000)
+#    plt.subplot(2, 1, 1)
+#    plt.plot(0.5*fs*w/np.pi, np.abs(h), 'b')
+#    plt.plot(cutoff, 0.5*np.sqrt(2), 'ko')
+#    plt.axvline(cutoff, color='k')
+#    plt.xlim(0, 0.5*fs)
+#    plt.title("Lowpass Filter Frequency Response")
+#    plt.xlabel('Frequency [Hz]')
+#    plt.grid()
     
-    # Filter the data, and plot both the original and filtered signals.
+#     Filter the data, and plot both the original and filtered signals.
 #    filtered_skywave = butter_lowpass_filter(skywave, cutoff, fs, order)
 #    group_delay=.6e-6
+#    avg_skywave=filtered_skywave
 #    plt.plot(time, skywave, 'b-', label='data')
 #    plt.plot(time-group_delay, filtered_skywave, 'r-', linewidth=2, label='low pass filtered data')
 #    plt.xlim(0,x_max)
 #    plt.title("UF 15-"+str(event)+ " return stroke #"+str(RS_number) )
 #    plt.xlabel('UTC Time in seconds after '+str(timestamp.hour)+':'+str(timestamp.minute)+':'+str(round((timestamp.second+timestamp.microsecond/1e6+t0)*1e9)/1e9))
 #    plt.grid()
-    
+#    
     #########################
     # Moving Average Filter #
     #########################
     def movingaverage(interval, window_size):
         window= np.ones(int(window_size))/float(window_size)
-        return np.convolve(interval, window, 'same')
-        
+        return np.convolve(interval, window, mode='valid')# 'same')  
+
     avg_skywave=movingaverage(skywave,10)
+#    avg_groundwave=movingaverage(groundwave,51)
+#    avg_skywave=avg_skywave+avg_groundwave
+#    avg_skywave=movingaverage(skywave[n1:nf],11)
 #    plt.plot(time, avg_skywave,'g',linewidth=2, label='moving average data')
 #    plt.legend()
 #    plt.show()
@@ -182,6 +193,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
         min_ind=np.argmax(np.abs(1.0/((mean+4*sigma)-y_topeak)))   
         min_ampl=y_topeak[min_ind]
         max_ampl=np.max(y_topeak)
+        curve_peak=y_topeak[-1]-mean
         y_ampl=max_ampl-min_ampl
        
         ten_percent_ind=np.argmax(np.abs(1.0/((0.1*y_ampl+min_ampl)-y_topeak)))  
@@ -201,7 +213,9 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
 #        [x[min_ind],x[ten_percent_ind],x[ninety_percent_ind]],[y[min_ind],y[ten_percent_ind],y[ninety_percent_ind]], 'or')
 #        show()
         
-        return risetime_90_10_time,ten_percent_ind,min_ind,y_ampl,mean,twenty_percent_ind,fifty_percent_ind,eighty_percent_ind,ninety_percent_ind,risetime_90_10
+        return risetime_90_10_time, ten_percent_ind, min_ind, y_ampl, mean,\
+        twenty_percent_ind, fifty_percent_ind, eighty_percent_ind,\
+        ninety_percent_ind, risetime_90_10, curve_peak, t_max
         
 #    time2=time-group_delay
 #    LPF_skywave = noise_analysis(time2,filtered_skywave,10e6,0)
@@ -212,6 +226,8 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
     ten_percent_level=MovAvg_skywave[1]*(1/fs)
     ground_wave_start=MovAvg_skywave[2]*(1/fs)
     ground_wave_ampl=MovAvg_skywave[3]
+    ground_wave_max=MovAvg_skywave[10]
+    ground_wave_time_peak=MovAvg_skywave[11]*(1/fs)
     min_ampl=MovAvg_skywave[4]
     print("Moving Average 10-90 risetime = %r" %MovAvg_skywave[0])
     
@@ -219,4 +235,6 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
 #    unfiltered = noise_analysis(time,skywave,10e6,0)
 #    print("Unfiltered 10-90 risetime = %r" %unfiltered[0])
 
-    return time, avg_skywave, UTC_time,risetime_10_90,ten_percent_level,ground_wave_start,ground_wave_ampl,min_ampl
+    return time, avg_skywave, UTC_time, risetime_10_90, ten_percent_level,\
+    ground_wave_start, ground_wave_ampl, min_ampl, ground_wave_max, ground_wave_time_peak,\
+    skywave
