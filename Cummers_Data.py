@@ -64,23 +64,28 @@ data=cummers_data['FIT_LF_20150827_232426_Bphi_nT']
 
 #dt=0.056626370 #UF 15-38, RS#2
 dt=0 #UF 15-38, RS#1
-plt.plot((time[0]-26.523-dt)*1e6-500,data[0]/np.max(data[0]),\
-        linewidth=2.0,color=[1,0,0],label="Cummer's Data, $B_\phi$ at 250 km")
+plt.plot((time[0]-26.523-dt)*1e6-500-242.53,(1/0.85)*data[0]/(np.max(data[0])),\
+        linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
 plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
 plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
-plt.xlim(0,1000)
+plt.xlim(-90,410)
 if dt==0:
     plt.title("UF 15-38, RS#1")
-    moving_avg=Skywave(38,1,26.522908895,8,x_max)  #UF 15-38. RS#1
+    moving_avg=Skywave(38,1,26.522908895,8,x_max,10)  #UF 15-38. RS#1
 else:
     plt.title("UF 15-38, RS#2")
-    moving_avg=Skywave(38,2,26.579535265,8,x_max) #UF 15-38. RS#2 *
+    moving_avg=Skywave(38,2,26.579535265,8,x_max,10) #UF 15-38. RS#2 *
 
 
 time, data, t_start = process_and_plot(moving_avg)
-plt.plot(time+242.53,data/np.max(data),linewidth=2.0,\
-         color=[0,0,1],label="DBY Data, $E_z$ at 209 km") #moving averaged skywave
+plt.plot(time,data/(np.max(data)),linewidth=2.0,\
+         color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
+plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
+plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
+plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
 plt.legend()
 plt.grid()
+
 plt.show()
  
