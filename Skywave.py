@@ -16,13 +16,17 @@ from Skywaves_plot_with_IRIG_LPF import Skywave
 import matplotlib.pyplot as plt
 import numpy as np
 import lecroy as lc
+import Yoko750 as yk
 import matplotlib
+
 matplotlib.rcParams.update({'font.size': 16})
 plt.figure(figsize=(15.8,10.9))
 fs=10e6
 
 date=82715
 calfactor=19900.50 #for plotting current
+current_calfactor=19900.50/1000 #(kA) for plotting current
+e12f_calfactor=74675.40/1000 #(kV/m) for plotting E-12F data
 x_min=0*1e6
 x_max=0.00050*1e6
 
@@ -133,22 +137,51 @@ def apply_two_filters(moving_avg_gw,moving_avg_ir):
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #UF 15-38, RS#1
 
-#Plot channel-base current
-suffix26=0
-seg=0
-lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
-                        str(suffix26)+".trc"
-lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
-IIHI_time = lecroy_IIHI.get_seg_time()
-IIHI = lecroy_IIHI.get_segments()
-plt.subplot(321)
-plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-plt.xlabel("Time ($\mu$s)")
-plt.ylabel("Channel-base Current (kA)")
-plt.xlim(0,500)
-plt.ylim(-1,16.1)
+##Plot channel-base current
+#suffix26=0
+#seg=0
+#lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
+#                        str(suffix26)+".trc"
+#lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
+#IIHI_time = lecroy_IIHI.get_seg_time()
+#IIHI = lecroy_IIHI.get_segments()
+#plt.subplot(321)
+#plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
+#plt.xlabel("Time ($\mu$s)")
+#plt.ylabel("Channel-base Current (kA)")
+##plt.xlim(0,500)
+#plt.ylim(-1,16.1)
+#plt.grid()
+#plt.title("UF 15-38, RS#1, Peak Current = 15.1 kA")
+
+#Plot E-12F (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1538_E12F"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+t0=800e-3-100e-6 #measured with DF-32
+tf=t0+500e-6
+E_12F=f.get_trace_data(header,1,t0,tf)
+ax1 = plt.subplot(321)
+ax1.plot((E_12F.dataTime-t0)*1e6,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
+ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
+for tl in ax1.get_yticklabels():
+    tl.set_color([0,0.5,0])
+    
+#Plot IIHI (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1538_IIHI"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+IIHI=f.get_trace_data(header,1,t0,tf)
+
+ax2 = ax1.twinx()
+ax2.plot((IIHI.dataTime-t0)*1e6,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
+ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
+ax2.set_xlabel('Time ($\mu$s)')
 plt.grid()
-plt.title("UF 15-38, RS#1, Peak Current = 15.1 kA")
+for tl in ax2.get_yticklabels():
+    tl.set_color([0.3,0.3,0.3])
 
 #Plot DBY Data
 moving_avg_gw=Skywave(38,1,26.522908895,8,x_max,10)   
@@ -177,23 +210,53 @@ plt.grid()
 plt.xlim(x_min-t_start,x_max-t_start)
 plt.ylim(-0.11,0.66)
 
-#UF 15-39, RS#1
-#Plot channel-base current
-suffix26=1
-seg=0
-lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
-                        str(suffix26)+".trc"
-lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
-IIHI_time = lecroy_IIHI.get_seg_time()
-IIHI = lecroy_IIHI.get_segments()
-plt.subplot(323)
-plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-plt.xlabel("Time ($\mu$s)")
-plt.ylabel("Channel-base Current (kA)")
-plt.xlim(0,500)
-plt.ylim(-1,5.4)
+##UF 15-39, RS#1
+##Plot channel-base current
+#suffix26=1
+#seg=0
+#lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
+#                        str(suffix26)+".trc"
+#lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
+#IIHI_time = lecroy_IIHI.get_seg_time()
+#IIHI = lecroy_IIHI.get_segments()
+#plt.subplot(323)
+#plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
+#plt.xlabel("Time ($\mu$s)")
+#plt.ylabel("Channel-base Current (kA)")
+#plt.xlim(0,500)
+#plt.ylim(-1,5.4)
+#plt.grid()
+#plt.title("UF 15-39, RS#1, Peak Current = 4.4 kA")
+
+#Plot E-12F (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1539_E12F"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+t0=800e-3-100e-6 #measured with DF-32
+tf=t0+500e-6
+E_12F=f.get_trace_data(header,1,t0,tf)
+ax1 = plt.subplot(323)
+ax1.plot((E_12F.dataTime-t0)*1e6,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
+ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
+for tl in ax1.get_yticklabels():
+    tl.set_color([0,0.5,0])
+    
+#Plot IIHI (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1539_IIHI"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+IIHI=f.get_trace_data(header,1,t0,tf)
+
+ax2 = ax1.twinx()
+ax2.plot((IIHI.dataTime-t0)*1e6,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
+ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
+ax2.set_xlabel('Time ($\mu$s)')
 plt.grid()
-plt.title("UF 15-39, RS#1, Peak Current = 4.4 kA")
+for tl in ax2.get_yticklabels():
+    tl.set_color([0.3,0.3,0.3])
+    
 
 #Plot DBY Data
 moving_avg_gw=Skywave(39,1,66.583436840,9,x_max,10)   
@@ -222,23 +285,54 @@ plt.grid()
 plt.xlim(x_min-t_start,x_max-t_start)
 plt.ylim(-0.05,0.48)
 
-#UF 15-40, RS#3
-#Plot channel-base current
-suffix26=2
-seg=1
-lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
-                        str(suffix26)+".trc"
-lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
-IIHI_time = lecroy_IIHI.get_seg_time()
-IIHI = lecroy_IIHI.get_segments()
-plt.subplot(325)
-plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-plt.xlabel("Time ($\mu$s)")
-plt.ylabel("Channel-base Current (kA)")
-plt.xlim(0,500)
-plt.ylim(-1,20.1)
+##UF 15-40, RS#3
+##Plot channel-base current
+#suffix26=2
+#seg=1
+#lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
+#                        str(suffix26)+".trc"
+#lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
+#IIHI_time = lecroy_IIHI.get_seg_time()
+#IIHI = lecroy_IIHI.get_segments()
+#plt.subplot(325)
+#plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
+#plt.xlabel("Time ($\mu$s)")
+#plt.ylabel("Channel-base Current (kA)")
+#plt.xlim(0,500)
+#plt.ylim(-1,20.1)
+#plt.grid()
+#plt.title("UF 15-40, RS#3, Peak Current = 19.1 kA")
+#
+
+#Plot E-12F (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1540_E12F"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+t0=8.20493937e-001-100e-6 #measured with DF-32
+tf=t0+500e-6
+E_12F=f.get_trace_data(header,1,t0,tf)
+ax1 = plt.subplot(325)
+ax1.plot((E_12F.dataTime-t0)*1e6,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
+ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
+for tl in ax1.get_yticklabels():
+    tl.set_color([0,0.5,0])
+    
+#Plot IIHI (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1540_IIHI"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+IIHI=f.get_trace_data(header,1,t0,tf)
+
+ax2 = ax1.twinx()
+ax2.plot((IIHI.dataTime-t0)*1e6,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
+ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
+ax2.set_xlabel('Time ($\mu$s)')
 plt.grid()
-plt.title("UF 15-40, RS#3, Peak Current = 19.1 kA")
+for tl in ax2.get_yticklabels():
+    tl.set_color([0.3,0.3,0.3])
+    
 
 #Plot DBY Data
 moving_avg_gw=Skywave(40,3,20.767465080,10,x_max,10)   
@@ -315,23 +409,53 @@ plt.xlim(x_min-t_start,x_max-t_start)
 plt.ylim(-0.12,0.52)
 
 
-#UF 15-42, RS#4
-#Plot channel-base current
-suffix26=4
-seg=2
-lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
-                        str(suffix26)+".trc"
-lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
-IIHI_time = lecroy_IIHI.get_seg_time()
-IIHI = lecroy_IIHI.get_segments()
-plt.subplot(323)
-plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-plt.xlabel("Time ($\mu$s)")
-plt.ylabel("Channel-base Current (kA)")
-plt.xlim(0,500)
-plt.ylim(-1,23.5)
+##UF 15-42, RS#4
+##Plot channel-base current
+#suffix26=4
+#seg=2
+#lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
+#                        str(suffix26)+".trc"
+#lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
+#IIHI_time = lecroy_IIHI.get_seg_time()
+#IIHI = lecroy_IIHI.get_segments()
+#plt.subplot(323)
+#plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
+#plt.xlabel("Time ($\mu$s)")
+#plt.ylabel("Channel-base Current (kA)")
+#plt.xlim(0,500)
+#plt.ylim(-1,23.5)
+#plt.grid()
+#plt.title("UF 15-42, RS#4, Peak Current = 22.5 kA")
+
+#Plot E-12F (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1542_E12F"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+t0=1.14528644-100e-6 #measured with DF-32
+tf=t0+500e-6
+E_12F=f.get_trace_data(header,1,t0,tf)
+ax1 = plt.subplot(323)
+ax1.plot((E_12F.dataTime-t0)*1e6,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
+ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
+for tl in ax1.get_yticklabels():
+    tl.set_color([0,0.5,0])
+    
+#Plot IIHI (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1542_IIHI"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+IIHI=f.get_trace_data(header,1,t0,tf)
+
+ax2 = ax1.twinx()
+ax2.plot((IIHI.dataTime-t0)*1e6,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
+ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
+ax2.set_xlabel('Time ($\mu$s)')
 plt.grid()
-plt.title("UF 15-42, RS#4, Peak Current = 22.5 kA")
+for tl in ax2.get_yticklabels():
+    tl.set_color([0.3,0.3,0.3])
+
 
 #Plot DBY Data
 moving_avg_gw=Skywave(42,4,43.058185590,12,x_max,10)   
@@ -360,24 +484,54 @@ plt.grid()
 plt.xlim(x_min-t_start,x_max-t_start)
 plt.ylim(-0.1,0.82)
 
-#UF 15-43, RS#4
-#Plot channel-base current
-suffix26=5
-seg=3
-lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
-                        str(suffix26)+".trc"
-lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
-IIHI_time = lecroy_IIHI.get_seg_time()
-IIHI = lecroy_IIHI.get_segments()
-plt.subplot(325)
-plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-plt.xlabel("Time ($\mu$s)")
-plt.ylabel("Channel-base Current (kA)")
-plt.xlim(0,500)
-plt.ylim(-1,21.5)
-plt.grid()
-plt.title("UF 15-43, RS#4, Peak Current = 20.5 kA")
+##UF 15-43, RS#4
+##Plot channel-base current
+#suffix26=5
+#seg=3
+#lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
+#                        str(suffix26)+".trc"
+#lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
+#IIHI_time = lecroy_IIHI.get_seg_time()
+#IIHI = lecroy_IIHI.get_segments()
+#plt.subplot(325)
+#plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
+#plt.xlabel("Time ($\mu$s)")
+#plt.ylabel("Channel-base Current (kA)")
+#plt.xlim(0,500)
+#plt.ylim(-1,21.5)
+#plt.grid()
+#plt.title("UF 15-43, RS#4, Peak Current = 20.5 kA")
+#
 
+#Plot E-12F (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1543_E12F"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+t0=1.38740730-100e-6 #measured with DF-32
+tf=t0+500e-6
+E_12F=f.get_trace_data(header,1,t0,tf)
+ax1 = plt.subplot(325)
+ax1.plot((E_12F.dataTime-t0)*1e6,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
+ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
+for tl in ax1.get_yticklabels():
+    tl.set_color([0,0.5,0])
+    
+#Plot IIHI (from scope 24)
+yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1543_IIHI"
+f = yk.Yoko750File(yoko_fileName)
+header = f.get_header()
+
+IIHI=f.get_trace_data(header,1,t0,tf)
+
+ax2 = ax1.twinx()
+ax2.plot((IIHI.dataTime-t0)*1e6,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
+ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
+ax2.set_xlabel('Time ($\mu$s)')
+plt.grid()
+for tl in ax2.get_yticklabels():
+    tl.set_color([0.3,0.3,0.3])
+    
 #Plot DBY Data
 moving_avg_gw=Skywave(43,4,23.293418545,13,x_max,10)   
 moving_avg_ir=Skywave(43,4,23.293418545,13,x_max,50) 
