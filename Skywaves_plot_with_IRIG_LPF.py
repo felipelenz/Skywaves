@@ -32,7 +32,7 @@ import IRIGA
 from pylab import ginput, plot, show
 from scipy.signal import butter, lfilter
 
-def Skywave(event,RS_number, RS_time,suffix,x_max): 
+def Skywave(event,RS_number, RS_time,suffix,x_max,filterwindow): 
  
 
 
@@ -161,7 +161,7 @@ def Skywave(event,RS_number, RS_time,suffix,x_max):
         window= np.ones(int(window_size))/float(window_size)
         return np.convolve(interval, window, mode='valid')# 'same')  
 
-    avg_skywave=movingaverage(skywave,10)
+    avg_skywave=movingaverage(skywave,filterwindow)
 #    avg_groundwave=movingaverage(groundwave,51)
 #    avg_skywave=avg_skywave+avg_groundwave
 #    avg_skywave=movingaverage(skywave[n1:nf],11)
