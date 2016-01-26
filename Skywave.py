@@ -175,7 +175,7 @@ plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
 plt.ylabel("E-field (arb. units) \n measured 209 km SE of ICLRT")
 plt.grid()
 plt.xlim(x_min-t_start,x_max-t_start)
-plt.ylim(-0.11,0.9)
+plt.ylim(-0.11,0.66)
 
 #UF 15-39, RS#1
 #Plot channel-base current
