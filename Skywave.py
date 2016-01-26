@@ -268,6 +268,7 @@ plt.xlim(x_min-t_start,x_max-t_start)
 plt.ylim(-0.09,0.81)
 plt.show()
 
+plt.figure(figsize=(15.8,10.9))
 #UF 15-41, RS#1
 #Plot channel-base current
 suffix26=3
