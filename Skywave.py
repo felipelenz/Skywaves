@@ -87,49 +87,49 @@ def apply_two_filters(moving_avg_gw,moving_avg_ir):
     data_ir=data2[2370:]
     return time_gw, data_gw, time_ir, data_ir, raw_time_list, raw_data_list, t_start 
 
-##!!!!!!Plot Fig.1!!!!!!!
-#temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
-#time_gw=temp[0]
-#data_gw=temp[1]
-#time_ir=temp[2]
-#data_ir=temp[3]
-#raw_time_list=temp[4]
-#raw_data_list=temp[5]
-#
-#plt.subplot(211)
-#plt.plot(raw_time_list,raw_data_list,linewidth=2.0,color=[1,0,0],label="Raw UF 15-40, RS#3")
-#plt.plot(time_gw,data_gw,linewidth=2.0,color=[0,0,1],label="Filtered UF 15-40, RS#3") #moving averaged skywave
-#plt.plot(time_ir, data_ir,linewidth=2.0,color=[0,0,1]) #moving averaged skywave
-#
-#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-#plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
-#plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
-#plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
-#plt.xlabel(moving_avg_gw[2])
-#plt.legend()
-#plt.grid()
-#plt.xlim(-30,350)
-#
-#plt.subplot(223)
-#plt.plot(raw_time_list,raw_data_list,linewidth=2.0,color=[1,0,0],label="Raw UF 15-40, RS#3")
-#plt.plot(time_gw,data_gw,linewidth=2.0,color=[0,0,1],label="Filtered UF 15-40, RS#3") #moving averaged skywave
-#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-#plt.legend()
-#plt.grid()
-#plt.xlim(-10,40)
-##plt.ylim(0,1.1)
-#
-#plt.subplot(224)
-#plt.plot(raw_time_list,raw_data_list,linewidth=2.0,color=[1,0,0],label="Raw UF 15-40, RS#3")
-#plt.plot(time_ir,data_ir,linewidth=2.0,color=[0,0,1],label="Filtered UF 15-40, RS#3") #moving averaged skywave
-#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-#plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
-#plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
-#plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
-#plt.legend()
-#plt.xlim(180,240)
-#plt.ylim(-0.12,0.28)
-#plt.grid()
+#!!!!!!Plot Fig.1!!!!!!!
+temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+time_gw=temp[0]
+data_gw=temp[1]
+time_ir=temp[2]
+data_ir=temp[3]
+raw_time_list=temp[4]
+raw_data_list=temp[5]
+
+plt.subplot(211)
+plt.plot(raw_time_list,raw_data_list,linewidth=2.0,color=[1,0,0],label="Raw UF 15-40, RS#3")
+plt.plot(time_gw,data_gw,linewidth=2.0,color=[0,0,1],label="Filtered UF 15-40, RS#3") #moving averaged skywave
+plt.plot(time_ir, data_ir,linewidth=2.0,color=[0,0,1]) #moving averaged skywave
+
+plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
+plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
+plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
+plt.xlabel(moving_avg_gw[2])
+plt.legend()
+plt.grid()
+plt.xlim(-30,350)
+
+plt.subplot(223)
+plt.plot(raw_time_list,raw_data_list,linewidth=2.0,color=[1,0,0],label="Raw UF 15-40, RS#3")
+plt.plot(time_gw,data_gw,linewidth=2.0,color=[0,0,1],label="Filtered UF 15-40, RS#3") #moving averaged skywave
+plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+plt.legend()
+plt.grid()
+plt.xlim(-10,40)
+#plt.ylim(0,1.1)
+
+plt.subplot(224)
+plt.plot(raw_time_list,raw_data_list,linewidth=2.0,color=[1,0,0],label="Raw UF 15-40, RS#3")
+plt.plot(time_ir,data_ir,linewidth=2.0,color=[0,0,1],label="Filtered UF 15-40, RS#3") #moving averaged skywave
+plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
+plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
+plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
+plt.legend()
+plt.xlim(180,240)
+plt.ylim(-0.12,0.28)
+plt.grid()
 #
 #plt.show()
 
@@ -376,211 +376,212 @@ def apply_two_filters(moving_avg_gw,moving_avg_ir):
 #plt.ylim(-0.09,0.81)
 #plt.show()
 #
-#plt.figure(figsize=(15.8,10.9))
-#UF 15-41, RS#1
-#Plot channel-base current
-suffix26=3
-seg=0
-lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
-                        str(suffix26)+".trc"
-lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
-IIHI_time = lecroy_IIHI.get_seg_time()
-IIHI = lecroy_IIHI.get_segments()
-plt.subplot(321)
-dt_4kA=99.9795
-plt.plot((IIHI_time-2.4e-3)*1e6-dt_4kA,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-#plt.xlabel("Time ($\mu$s)")
-plt.ylabel("Channel-base Current (kA)")
-plt.xlim(-10,10)
-plt.ylim(-1,14.7)
-plt.grid()
-#plt.title("UF 15-41, RS#1, Peak Current = 13.7 kA")
 
-#Plot DBY Data
-moving_avg_gw=Skywave(41,1,57.298446790,11,x_max,10)   
-moving_avg_ir=Skywave(41,1,57.298446790,11,x_max,50) 
-
-temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
-time_gw=temp[0]
-data_gw=temp[1]
-time_ir=temp[2]
-data_ir=temp[3]
-raw_time_list=temp[4]
-raw_data_list=temp[5]
-t_start=temp[6]
-
-plt.subplot(322)
-plt.plot(time_gw,data_gw,linewidth=2.0,color=[4/6,3/6,1],label="UF 15-41, RS#1") #moving averaged skywave
-plt.plot(time_ir, data_ir,linewidth=2.0,color=[4/6,3/6,1]) #moving averaged skywave
-plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
-plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
-plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
-plt.title("Event UF 15-41, 1st Return Stroke")
-plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
-plt.ylabel("E-field (arb. units) \n measured 209 km SE of ICLRT")
-plt.grid()
-plt.xlim(x_min-t_start+50,x_max-t_start-115)
-plt.ylim(-0.12,0.52)
-
-
-##UF 15-42, RS#4
+##plt.figure(figsize=(15.8,10.9))
+##UF 15-41, RS#1
 ##Plot channel-base current
-#suffix26=4
-#seg=2
+#suffix26=3
+#seg=0
 #lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
 #                        str(suffix26)+".trc"
 #lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
 #IIHI_time = lecroy_IIHI.get_seg_time()
 #IIHI = lecroy_IIHI.get_segments()
-#plt.subplot(323)
-#plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-#plt.xlabel("Time ($\mu$s)")
+#plt.subplot(321)
+#dt_4kA=99.9795
+#plt.plot((IIHI_time-2.4e-3)*1e6-dt_4kA,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
+##plt.xlabel("Time ($\mu$s)")
 #plt.ylabel("Channel-base Current (kA)")
-#plt.xlim(0,500)
-#plt.ylim(-1,23.5)
+#plt.xlim(-10,10)
+#plt.ylim(-1,14.7)
 #plt.grid()
-#plt.title("UF 15-42, RS#4, Peak Current = 22.5 kA")
-
-#Plot E-12F (from scope 24)
-yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1542_E12F"
-f = yk.Yoko750File(yoko_fileName)
-header = f.get_header()
-
-t0=1.14528644-100e-6 #measured with DF-32
-tf=t0+500e-6
-dt_4kA=95.9903#us
-dt_E12F_IHII=3.544 #us
-
-E_12F=f.get_trace_data(header,1,t0,tf)
-ax1 = plt.subplot(323)
-ax1.plot((E_12F.dataTime-t0)*1e6-dt_4kA,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
-plt.ylim(1,9)
-ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
-for tl in ax1.get_yticklabels():
-    tl.set_color([0,0.5,0])
-    
-#Plot IIHI (from scope 24)
-yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1542_IIHI"
-f = yk.Yoko750File(yoko_fileName)
-header = f.get_header()
-
-IIHI=f.get_trace_data(header,1,t0,tf)
-
-ax2 = ax1.twinx()
-ax2.plot((IIHI.dataTime-t0)*1e6-dt_4kA-dt_E12F_IHII,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
-ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
-ax2.set_xlabel('Time ($\mu$s)')
-plt.grid()
-for tl in ax2.get_yticklabels():
-    tl.set_color([0.3,0.3,0.3])
-plt.xlim(-10,10)
-
-#Plot DBY Data
-moving_avg_gw=Skywave(42,4,43.058185590,12,x_max,10)   
-moving_avg_ir=Skywave(42,4,43.058185590,12,x_max,50) 
-
-temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
-time_gw=temp[0]
-data_gw=temp[1]
-time_ir=temp[2]
-data_ir=temp[3]
-raw_time_list=temp[4]
-raw_data_list=temp[5]
-t_start=temp[6]
-
-plt.subplot(324)
-plt.plot(time_gw,data_gw,linewidth=2.0,color=[5/6,2/6,1],label="UF 15-42, RS#4") #moving averaged skywave
-plt.plot(time_ir, data_ir,linewidth=2.0,color=[5/6,2/6,1]) #moving averaged skywave
-plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
-plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
-plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
-plt.title("Event UF 15-42, 4th Return Stroke")
-plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
-plt.ylabel("E-field (arb. units) \n measured 209 km SE of ICLRT")
-plt.grid()
-plt.xlim(x_min-t_start+50,x_max-t_start-115)
-plt.ylim(-0.1,0.82)
-
-##UF 15-43, RS#4
-##Plot channel-base current
-#suffix26=5
-#seg=3
-#lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
-#                        str(suffix26)+".trc"
-#lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
-#IIHI_time = lecroy_IIHI.get_seg_time()
-#IIHI = lecroy_IIHI.get_segments()
-#plt.subplot(325)
-#plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
-#plt.xlabel("Time ($\mu$s)")
-#plt.ylabel("Channel-base Current (kA)")
-#plt.xlim(0,500)
-#plt.ylim(-1,21.5)
-#plt.grid()
-#plt.title("UF 15-43, RS#4, Peak Current = 20.5 kA")
+##plt.title("UF 15-41, RS#1, Peak Current = 13.7 kA")
 #
-
-#Plot E-12F (from scope 24)
-yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1543_E12F"
-f = yk.Yoko750File(yoko_fileName)
-header = f.get_header()
-
-t0=1.38740730-100e-6 #measured with DF-32
-tf=t0+500e-6
-dt_4kA=96.24437#us
-dt_E12F_IHII=3.544 #us
-E_12F=f.get_trace_data(header,1,t0,tf)
-ax1 = plt.subplot(325)
-ax1.plot((E_12F.dataTime-t0)*1e6-dt_4kA,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
-plt.ylim(1,9)
-ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
-for tl in ax1.get_yticklabels():
-    tl.set_color([0,0.5,0])
-    
-#Plot IIHI (from scope 24)
-yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1543_IIHI"
-f = yk.Yoko750File(yoko_fileName)
-header = f.get_header()
-
-IIHI=f.get_trace_data(header,1,t0,tf)
-
-ax2 = ax1.twinx()
-ax2.plot((IIHI.dataTime-t0)*1e6-dt_4kA-dt_E12F_IHII,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
-ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
-ax2.set_xlabel('Time ($\mu$s)')
-plt.grid()
-for tl in ax2.get_yticklabels():
-    tl.set_color([0.3,0.3,0.3])
-plt.xlim(-10,10)
-
-#Plot DBY Data
-moving_avg_gw=Skywave(43,4,23.293418545,13,x_max,10)   
-moving_avg_ir=Skywave(43,4,23.293418545,13,x_max,50) 
-
-temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
-time_gw=temp[0]
-data_gw=temp[1]
-time_ir=temp[2]
-data_ir=temp[3]
-raw_time_list=temp[4]
-raw_data_list=temp[5]
-t_start=temp[6]
-
-plt.subplot(326)
-plt.plot(time_gw,data_gw,linewidth=2.0,color=[1,1/6,1],label="UF 15-43, RS#4") #moving averaged skywave
-plt.plot(time_ir, data_ir,linewidth=2.0,color=[1,1/6,1]) #moving averaged skywave
-plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
-plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
-plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
-plt.title("Event UF 15-43, 4th Return Stroke")
-plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
-plt.ylabel("E-field (arb. units) \n measured 209 km SE of ICLRT")
-plt.grid()
-plt.xlim(x_min-t_start+50,x_max-t_start-115)
-plt.ylim(-.13,0.78)
+##Plot DBY Data
+#moving_avg_gw=Skywave(41,1,57.298446790,11,x_max,10)   
+#moving_avg_ir=Skywave(41,1,57.298446790,11,x_max,50) 
+#
+#temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+#time_gw=temp[0]
+#data_gw=temp[1]
+#time_ir=temp[2]
+#data_ir=temp[3]
+#raw_time_list=temp[4]
+#raw_data_list=temp[5]
+#t_start=temp[6]
+#
+#plt.subplot(322)
+#plt.plot(time_gw,data_gw,linewidth=2.0,color=[4/6,3/6,1],label="UF 15-41, RS#1") #moving averaged skywave
+#plt.plot(time_ir, data_ir,linewidth=2.0,color=[4/6,3/6,1]) #moving averaged skywave
+#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+#plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
+#plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
+#plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
+#plt.title("Event UF 15-41, 1st Return Stroke")
+#plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+#plt.ylabel("E-field (arb. units) \n measured 209 km SE of ICLRT")
+#plt.grid()
+#plt.xlim(x_min-t_start+50,x_max-t_start-115)
+#plt.ylim(-0.12,0.52)
+#
+#
+###UF 15-42, RS#4
+###Plot channel-base current
+##suffix26=4
+##seg=2
+##lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
+##                        str(suffix26)+".trc"
+##lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
+##IIHI_time = lecroy_IIHI.get_seg_time()
+##IIHI = lecroy_IIHI.get_segments()
+##plt.subplot(323)
+##plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
+##plt.xlabel("Time ($\mu$s)")
+##plt.ylabel("Channel-base Current (kA)")
+##plt.xlim(0,500)
+##plt.ylim(-1,23.5)
+##plt.grid()
+##plt.title("UF 15-42, RS#4, Peak Current = 22.5 kA")
+#
+##Plot E-12F (from scope 24)
+#yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1542_E12F"
+#f = yk.Yoko750File(yoko_fileName)
+#header = f.get_header()
+#
+#t0=1.14528644-100e-6 #measured with DF-32
+#tf=t0+500e-6
+#dt_4kA=95.9903#us
+#dt_E12F_IHII=3.544 #us
+#
+#E_12F=f.get_trace_data(header,1,t0,tf)
+#ax1 = plt.subplot(323)
+#ax1.plot((E_12F.dataTime-t0)*1e6-dt_4kA,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
+#plt.ylim(1,9)
+#ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
+#for tl in ax1.get_yticklabels():
+#    tl.set_color([0,0.5,0])
+#    
+##Plot IIHI (from scope 24)
+#yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1542_IIHI"
+#f = yk.Yoko750File(yoko_fileName)
+#header = f.get_header()
+#
+#IIHI=f.get_trace_data(header,1,t0,tf)
+#
+#ax2 = ax1.twinx()
+#ax2.plot((IIHI.dataTime-t0)*1e6-dt_4kA-dt_E12F_IHII,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
+#ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
+#ax2.set_xlabel('Time ($\mu$s)')
+#plt.grid()
+#for tl in ax2.get_yticklabels():
+#    tl.set_color([0.3,0.3,0.3])
+#plt.xlim(-10,10)
+#
+##Plot DBY Data
+#moving_avg_gw=Skywave(42,4,43.058185590,12,x_max,10)   
+#moving_avg_ir=Skywave(42,4,43.058185590,12,x_max,50) 
+#
+#temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+#time_gw=temp[0]
+#data_gw=temp[1]
+#time_ir=temp[2]
+#data_ir=temp[3]
+#raw_time_list=temp[4]
+#raw_data_list=temp[5]
+#t_start=temp[6]
+#
+#plt.subplot(324)
+#plt.plot(time_gw,data_gw,linewidth=2.0,color=[5/6,2/6,1],label="UF 15-42, RS#4") #moving averaged skywave
+#plt.plot(time_ir, data_ir,linewidth=2.0,color=[5/6,2/6,1]) #moving averaged skywave
+#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+#plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
+#plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
+#plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
+#plt.title("Event UF 15-42, 4th Return Stroke")
+#plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+#plt.ylabel("E-field (arb. units) \n measured 209 km SE of ICLRT")
+#plt.grid()
+#plt.xlim(x_min-t_start+50,x_max-t_start-115)
+#plt.ylim(-0.1,0.82)
+#
+###UF 15-43, RS#4
+###Plot channel-base current
+##suffix26=5
+##seg=3
+##lecroy_fileName_IIHI = "/Volumes/2015 Data/0"+str(date)+"/Scope26/C1AC0000"+ \
+##                        str(suffix26)+".trc"
+##lecroy_IIHI = lc.lecroy_data(lecroy_fileName_IIHI)
+##IIHI_time = lecroy_IIHI.get_seg_time()
+##IIHI = lecroy_IIHI.get_segments()
+##plt.subplot(325)
+##plt.plot((IIHI_time-2.4e-3)*1e6,IIHI[seg]*calfactor/1000,color=[0.3, 0.3, 0.3],linewidth=2)
+##plt.xlabel("Time ($\mu$s)")
+##plt.ylabel("Channel-base Current (kA)")
+##plt.xlim(0,500)
+##plt.ylim(-1,21.5)
+##plt.grid()
+##plt.title("UF 15-43, RS#4, Peak Current = 20.5 kA")
+##
+#
+##Plot E-12F (from scope 24)
+#yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1543_E12F"
+#f = yk.Yoko750File(yoko_fileName)
+#header = f.get_header()
+#
+#t0=1.38740730-100e-6 #measured with DF-32
+#tf=t0+500e-6
+#dt_4kA=96.24437#us
+#dt_E12F_IHII=3.544 #us
+#E_12F=f.get_trace_data(header,1,t0,tf)
+#ax1 = plt.subplot(325)
+#ax1.plot((E_12F.dataTime-t0)*1e6-dt_4kA,E_12F.data*e12f_calfactor,color=[0,0.5,0],linewidth=2)
+#plt.ylim(1,9)
+#ax1.set_ylabel('Close Electric Field \n from E-12F (kV/m)',color=[0,0.5,0])
+#for tl in ax1.get_yticklabels():
+#    tl.set_color([0,0.5,0])
+#    
+##Plot IIHI (from scope 24)
+#yoko_fileName = "/Volumes/2015 Data/0"+str(date)+"/Scope24/UF1543_IIHI"
+#f = yk.Yoko750File(yoko_fileName)
+#header = f.get_header()
+#
+#IIHI=f.get_trace_data(header,1,t0,tf)
+#
+#ax2 = ax1.twinx()
+#ax2.plot((IIHI.dataTime-t0)*1e6-dt_4kA-dt_E12F_IHII,IIHI.data*current_calfactor,color=[0.3,0.3,0.3],linewidth=2)
+#ax2.set_ylabel('Channel-base Current (kA)', color=[0.3,0.3,0.3])
+#ax2.set_xlabel('Time ($\mu$s)')
+#plt.grid()
+#for tl in ax2.get_yticklabels():
+#    tl.set_color([0.3,0.3,0.3])
+#plt.xlim(-10,10)
+#
+##Plot DBY Data
+#moving_avg_gw=Skywave(43,4,23.293418545,13,x_max,10)   
+#moving_avg_ir=Skywave(43,4,23.293418545,13,x_max,50) 
+#
+#temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+#time_gw=temp[0]
+#data_gw=temp[1]
+#time_ir=temp[2]
+#data_ir=temp[3]
+#raw_time_list=temp[4]
+#raw_data_list=temp[5]
+#t_start=temp[6]
+#
+#plt.subplot(326)
+#plt.plot(time_gw,data_gw,linewidth=2.0,color=[1,1/6,1],label="UF 15-43, RS#4") #moving averaged skywave
+#plt.plot(time_ir, data_ir,linewidth=2.0,color=[1,1/6,1]) #moving averaged skywave
+#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+#plt.plot([(dt_70km)*1e6,(dt_70km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 70 km h iono
+#plt.plot([(dt_80km)*1e6,(dt_80km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 80 km h iono
+#plt.plot([(dt_90km)*1e6,(dt_90km)*1e6],[-1,1.5],'--',linewidth=2.0) #time for 90 km h iono
+#plt.title("Event UF 15-43, 4th Return Stroke")
+#plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+#plt.ylabel("E-field (arb. units) \n measured 209 km SE of ICLRT")
+#plt.grid()
+#plt.xlim(x_min-t_start+50,x_max-t_start-115)
+#plt.ylim(-.13,0.78)
 
 
 plt.show()
