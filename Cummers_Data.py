@@ -89,34 +89,183 @@ def apply_two_filters(moving_avg_gw,moving_avg_ir):
     data_ir=data2[2370:]
     return time_gw, data_gw, time_ir, data_ir, raw_time_list, raw_data_list, t_start 
 
-#UF 15-38
-cummers_data=sio.loadmat('FIT_LF_20150827_232426.mat')
-time=cummers_data['FIT_LF_20150827_232426_Time_Sec']
-data=cummers_data['FIT_LF_20150827_232426_Bphi_nT']
-
+##UF 15-38
+#cummers_data=sio.loadmat('FIT_LF_20150827_232426.mat')
+#time=cummers_data['FIT_LF_20150827_232426_Time_Sec']
+#data=cummers_data['FIT_LF_20150827_232426_Bphi_nT']
+#
 #dt=0.056626370 #UF 15-38, RS#2
-dt=0 #UF 15-38, RS#1
-plt.plot((time[0]-26.523-dt)*1e6-500-242.53,(1/0.85)*data[0]/(np.max(data[0])),\
-        linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
-plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
-plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
-plt.xlim(-90,410)
-if dt==0:
-    plt.title("UF 15-38, RS#1")
-    moving_avg=Skywave(38,1,26.522908895,8,x_max,10)  #UF 15-38. RS#1
-else:
-    plt.title("UF 15-38, RS#2")
-    moving_avg=Skywave(38,2,26.579535265,8,x_max,10) #UF 15-38. RS#2 *
+##dt=0 #UF 15-38, RS#1
+#plt.plot((time[0]-26.523-dt)*1e6-500-242.53,data[0]/np.max(data[0]),\
+#        linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
+#plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
+#plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#plt.xlim(-90,410)
+#if dt==0:
+#    plt.title("UF 15-38, RS#1")
+#    moving_avg=Skywave(38,1,26.522908895,8,x_max,10)  #UF 15-38. RS#1
+#else:
+#    plt.title("UF 15-38, RS#2")
+#    moving_avg=Skywave(38,2,26.579535265,8,x_max,10) #UF 15-38. RS#2 *
+#
+#
+#time, data, t_start = process_and_plot(moving_avg)
+#plt.plot(time,data/(np.max(data)),linewidth=2.0,\
+#         color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
+#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+#plt.legend()
+#plt.grid()
+##
+#plt.show()
+
+##UF 15-39, RS#1
+#cummers_data=sio.loadmat('FIT_LF_20150827_233206.mat')
+#time=cummers_data['FIT_LF_20150827_233206_Time_Sec']
+#data=cummers_data['FIT_LF_20150827_233206_Bphi_nT']
+#
+#plt.plot((time[0]-6.58427)*1e6-0.988,data[0]/np.max(data[0]),linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
+#plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
+#plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+##
+##Plot DBY Data
+#moving_avg_gw=Skywave(39,1,66.583436840,9,x_max,10)   
+#moving_avg_ir=Skywave(39,1,66.583436840,9,x_max,50) 
+#
+#temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+#time_gw=temp[0]
+#data_gw=temp[1]
+#time_ir=temp[2]
+#data_ir=temp[3]
+#raw_time_list=temp[4]
+#raw_data_list=temp[5]
+#t_start=temp[6]
+#
+#
+#plt.plot(time_gw,data_gw/np.max(data_gw),linewidth=2.0,color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
+#plt.plot(time_ir, data_ir/np.max(data_gw),linewidth=2.0,color=[0,0,1]) #moving averaged skywave
+#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+#plt.title("Event UF 15-39, 1st Return Stroke")
+##plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+##plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#plt.legend()
+#plt.title("UF 15-39, RS#1")
+#plt.grid()
+#plt.xlim(x_min-t_start,x_max-t_start)
+##plt.ylim(-.4,1.1)
+##
+##plt.show()
 
 
-time, data, t_start = process_and_plot(moving_avg)
-plt.plot(time,data/(np.max(data)),linewidth=2.0,\
-         color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
-plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-plt.legend()
-plt.grid()
+##UF 15-39, RS#2
+#cummers_data=sio.loadmat('FIT_LF_20150827_233206.mat')
+#time=cummers_data['FIT_LF_20150827_233206_Time_Sec']
+#data=cummers_data['FIT_LF_20150827_233206_Bphi_nT']
+#
+#plt.plot((time[0]-6.58427)*1e6-0.988-3116-10.959,data[0]/np.max(data[0])/0.35,linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
+#plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
+#plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+##
+##Plot DBY Data
+#moving_avg_gw=Skywave(39,2,66.586552840,9,x_max,10)   
+#moving_avg_ir=Skywave(39,2,66.586552840,9,x_max,50) 
+#
+#temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+#time_gw=temp[0]
+#data_gw=temp[1]
+#time_ir=temp[2]
+#data_ir=temp[3]
+#raw_time_list=temp[4]
+#raw_data_list=temp[5]
+#t_start=temp[6]
+#
+#
+#plt.plot(time_gw,data_gw/np.max(data_gw),linewidth=2.0,color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
+#plt.plot(time_ir, data_ir/np.max(data_gw),linewidth=2.0,color=[0,0,1]) #moving averaged skywave
+#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+#plt.title("Event UF 15-39, 2nd Return Stroke")
+###plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+###plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#plt.legend()
+#plt.title("UF 15-39, RS#2")
+#plt.grid()
+#plt.xlim(x_min-t_start,x_max-t_start)
+#plt.ylim(-.4,1.1)
+#
+##plt.show()
 
-plt.show()
+##UF 15-40, RS#2
+#cummers_data=sio.loadmat('FIT_LF_20150827_234120.mat')
+#time=cummers_data['FIT_LF_20150827_234120_Time_Sec']
+#data=cummers_data['FIT_LF_20150827_234120_Bphi_nT']
+#
+#plt.plot((time[0]-20.746971600)*1e6-833.393,data[0]/np.max(data[0])/0.788,linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
+#plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
+#plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#
+##Plot DBY Data
+#moving_avg_gw=Skywave(40,2,20.746971600,10,x_max,10)   
+#moving_avg_ir=Skywave(40,2,20.746971600,10,x_max,50) 
+#
+#temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+#time_gw=temp[0]
+#data_gw=temp[1]
+#time_ir=temp[2]
+#data_ir=temp[3]
+#raw_time_list=temp[4]
+#raw_data_list=temp[5]
+#t_start=temp[6]
+#
+#
+#plt.plot(time_gw,data_gw/np.max(data_gw),linewidth=2.0,color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
+#plt.plot(time_ir, data_ir/np.max(data_gw),linewidth=2.0,color=[0,0,1]) #moving averaged skywave
+#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+#plt.title("Event UF 15-40, 2nd Return Stroke")
+###plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+###plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#plt.legend()
+#plt.title("UF 15-40, RS#2")
+#plt.grid()
+#plt.xlim(x_min-t_start,x_max-t_start)
+#plt.ylim(-.4,1.1)
+##
+###plt.show()
+
+##UF 15-40, RS#3
+#cummers_data=sio.loadmat('FIT_LF_20150827_234120.mat')
+#time=cummers_data['FIT_LF_20150827_234120_Time_Sec']
+#data=cummers_data['FIT_LF_20150827_234120_Bphi_nT']
+#
+#plt.plot((time[0]-20.7683)*1e6+1.005,data[0]/np.max(data[0]),linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
+#plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
+#plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#
+##Plot DBY Data
+#moving_avg_gw=Skywave(40,3,20.767465080,10,x_max,10)   
+#moving_avg_ir=Skywave(40,3,20.767465080,10,x_max,50) 
+#
+#temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+#time_gw=temp[0]
+#data_gw=temp[1]
+#time_ir=temp[2]
+#data_ir=temp[3]
+#raw_time_list=temp[4]
+#raw_data_list=temp[5]
+#t_start=temp[6]
+#
+#
+#plt.plot(time_gw,data_gw/np.max(data_gw),linewidth=2.0,color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
+#plt.plot(time_ir, data_ir/np.max(data_gw),linewidth=2.0,color=[0,0,1]) #moving averaged skywave
+#plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+#plt.title("Event UF 15-40, 3rd Return Stroke")
+###plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+###plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#plt.legend()
+#plt.title("UF 15-40, RS#3")
+#plt.grid()
+#plt.xlim(x_min-t_start,x_max-t_start)
+#plt.ylim(-.4,1.1)
+##
+##plt.show()
 
 ##UF 15-41, RS#1
 #cummers_data=sio.loadmat('FIT_LF_20150827_234357.mat')
@@ -125,7 +274,7 @@ plt.show()
 #
 #plt.plot((time[0]-57.2993)*1e6+20,data[0]/np.max(data[0]),linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
 #plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
-##plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
 #
 ##Plot DBY Data
 #moving_avg_gw=Skywave(41,1,57.298446790,11,x_max,10)   
@@ -145,7 +294,7 @@ plt.show()
 #plt.plot(time_ir, data_ir/np.max(data_gw),linewidth=2.0,color=[0,0,1]) #moving averaged skywave
 #plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
 #plt.title("Event UF 15-41, 1st Return Stroke")
-#plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+##plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
 #plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
 #plt.legend()
 #plt.title("UF 15-41, RS#1")
@@ -155,17 +304,19 @@ plt.show()
 #
 #plt.show()
 
-##UF 15-43, RS#4
-#cummers_data=sio.loadmat('FIT_LF_20150827_235323.mat')
-#time=cummers_data['FIT_LF_20150827_235323_Time_Sec']
-#data=cummers_data['FIT_LF_20150827_235323_Bphi_nT']
+
+##UF 15-42, RS#4
+#cummers_data=sio.loadmat('FIT_LF_20150827_234743.mat')
+#time=cummers_data['FIT_LF_20150827_234743_Time_Sec']
+#data=cummers_data['FIT_LF_20150827_234743_Bphi_nT']
 #
-#plt.plot((time[0]-23.2943)*1e6+46.02,data[0]/np.max(data[0]),linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
+#plt.plot((time[0]-43.059)*1e6-20.005,data[0]/np.max(data[0]),linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
 #plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
+#plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
 #
 ##Plot DBY Data
-#moving_avg_gw=Skywave(43,4,23.293418545,13,x_max,10)   
-#moving_avg_ir=Skywave(43,4,23.293418545,13,x_max,50)
+#moving_avg_gw=Skywave(42,4,43.058185590,12,x_max,10)   
+#moving_avg_ir=Skywave(42,4,43.058185590,12,x_max,50) 
 #
 #temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
 #time_gw=temp[0]
@@ -180,13 +331,50 @@ plt.show()
 #plt.plot(time_gw,data_gw/np.max(data_gw),linewidth=2.0,color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
 #plt.plot(time_ir, data_ir/np.max(data_gw),linewidth=2.0,color=[0,0,1]) #moving averaged skywave
 #plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
-#plt.title("Event UF 15-43, 4th Return Stroke")
-#plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
-#plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+#plt.title("Event UF 15-42, 4th Return Stroke")
+###plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+###plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
 #plt.legend()
-#plt.title("UF 15-43, RS#4")
+#plt.title("UF 15-42, RS#4")
 #plt.grid()
 #plt.xlim(x_min-t_start,x_max-t_start)
 #plt.ylim(-.4,1.1)
-#
+
 #plt.show()
+
+
+#UF 15-43, RS#4
+cummers_data=sio.loadmat('FIT_LF_20150827_235323.mat')
+time=cummers_data['FIT_LF_20150827_235323_Time_Sec']
+data=cummers_data['FIT_LF_20150827_235323_Bphi_nT']
+
+plt.plot((time[0]-23.2943)*1e6+46.02,data[0]/np.max(data[0]),linewidth=2.0,color=[1,0,0],label="DUKE LF $B_\phi$ Data at 250 km")
+plt.xlabel('Time ($\mu$s)')# after 23:24:26.5801')
+
+#Plot DBY Data
+moving_avg_gw=Skywave(43,4,23.293418545,13,x_max,10)   
+moving_avg_ir=Skywave(43,4,23.293418545,13,x_max,50)
+
+temp=apply_two_filters(moving_avg_gw,moving_avg_ir)
+time_gw=temp[0]
+data_gw=temp[1]
+time_ir=temp[2]
+data_ir=temp[3]
+raw_time_list=temp[4]
+raw_data_list=temp[5]
+t_start=temp[6]
+
+
+plt.plot(time_gw,data_gw/np.max(data_gw),linewidth=2.0,color=[0,0,1],label="UF Wideband $E_z$ Data at 209 km") #moving averaged skywave
+plt.plot(time_ir, data_ir/np.max(data_gw),linewidth=2.0,color=[0,0,1]) #moving averaged skywave
+plt.plot([0,0],[-1,1.5],'--',linewidth=2.0) #time when skywave raises 3 std dev from mean noise
+plt.title("Event UF 15-43, 4th Return Stroke")
+#plt.xlabel("UTC time in $\mu$s after %s"%moving_avg_gw[2])
+plt.ylabel('Amplitude normalized E (blue) and B (red) fields')
+plt.legend()
+plt.title("UF 15-43, RS#4")
+plt.grid()
+plt.xlim(x_min-t_start,x_max-t_start)
+plt.ylim(-.4,1.1)
+
+plt.show()
