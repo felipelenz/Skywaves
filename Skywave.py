@@ -453,7 +453,7 @@ def apply_two_filters(moving_avg_gw,moving_avg_ir):
 #plt.grid()
 ##plt.title("UF 15-41, RS#1, Peak Current = 13.7 kA")
 #
-##Plot DBY Data
+###Plot DBY Data
 #moving_avg_gw=Skywave(41,1,57.298446790,11,x_max,10)   
 #moving_avg_ir=Skywave(41,1,57.298446790,11,x_max,50) 
 #
@@ -466,6 +466,25 @@ def apply_two_filters(moving_avg_gw,moving_avg_ir):
 #raw_data_list=temp[5]
 #t_start=temp[6]
 #
+##This part of the code creates a series of .csv files that can be used on
+##Read_csv.py and allow faster plotting, measurement because there's no need to
+##access the original server.
+#with open("UF 15-41, RS1 (Ez, DBY) groundwave.csv",'w') as fout:
+#    for index in range(len(data_gw)):
+#        fout.write(str(time_gw[index])+','+str(data_gw[index])+'\n')
+#with open("UF 15-41, RS1 (Ez, DBY) skywave.csv",'w') as fout:
+#    for index in range(len(data_ir)):
+#        fout.write(str(time_ir[index])+','+str(data_ir[index])+'\n')
+#with open("UF 15-41, RS1 (Ez, DBY) (raw).csv",'w') as fout:
+#    for index in range(len(raw_data_list)):
+#        fout.write(str(raw_time_list[index])+','+str(raw_data_list[index])+'\n')
+#E_z_DBY=np.append(data_gw,data_ir)
+#E_z_time_us=np.append(time_gw,time_ir)
+#
+#with open("UF 15-41, RS1 (Ez, DBY).csv",'w') as fout:
+#    for index in range(len(E_z_DBY)):
+#        fout.write(str(E_z_time_us[index])+','+str(E_z_DBY[index])+'\n')
+
 #plt.subplot(322)
 #plt.plot(time_gw,data_gw,linewidth=2.0,color=[4/6,3/6,1],label="UF 15-41, RS#1") #moving averaged skywave
 #plt.plot(time_ir, data_ir,linewidth=2.0,color=[4/6,3/6,1]) #moving averaged skywave
