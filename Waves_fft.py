@@ -109,10 +109,13 @@ def plot_fft(time,data,title_string):
     
     #zero pad data to increase frequency resolution
     N=len(data)
+    window=np.ones(N)
     pad=np.zeros(N*1e3)
     data=np.append(pad,data)
     data=np.append(data,pad)
     
+    window=np.append(pad,window)
+    window=np.append(window,pad)
     #plot zero padded data
     plt.plot(data)
     plt.show()
@@ -122,11 +125,16 @@ def plot_fft(time,data,title_string):
     fs=10e6
     Ts=1/fs
     data_FFT=take_fft(data,N,Ts)
+    window_FFT=take_fft(window,N,Ts)
     nu=data_FFT[0]
     Fk=data_FFT[1]
+    Window_Fk=window_FFT[1]
     
     #plot magnitude squared of fft
-    plt.plot(nu*1e-3,np.absolute(Fk)**2)
+    plt.plot(nu*1e-3,np.absolute(Fk)**2/np.max(np.absolute(Fk)**2),label='data')
+    plt.plot(nu*1e-3,np.absolute(Window_Fk)**2/np.max(np.absolute(Window_Fk)**2),label='window') #Window spectra
+    plt.legend()
+    
     max_ampl=np.max(np.absolute(Fk)**2) #find max 
     ampl=np.ones(len(nu))*max_ampl #create an array 
     plt.plot(nu*1e-3,ampl) #Max
@@ -137,11 +145,11 @@ def plot_fft(time,data,title_string):
     print("3dB frequency cutoff = %3.2f kHz" %np.abs(fc))
     
     #plot 3dB frequency lines
-    plt.plot([nu[index]*1e-3,nu[index]*1e-3],[-np.min(np.absolute(Fk)**2),np.max(np.absolute(Fk)**2)])
-    plt.plot([-nu[index]*1e-3,-nu[index]*1e-3],[-np.min(np.absolute(Fk)**2),np.max(np.absolute(Fk)**2)]) 
+    plt.plot([nu[index]*1e-3,nu[index]*1e-3],[-0.2,1])#[-np.min(np.absolute(Fk)**2),np.max(np.absolute(Fk)**2)])
+    plt.plot([-nu[index]*1e-3,-nu[index]*1e-3],[-0.2,1])#[-np.min(np.absolute(Fk)**2),np.max(np.absolute(Fk)**2)]) 
     
     plt.xlabel('Frequency (kHz)')
-    plt.ylabel('$|fft|^2$')
+    plt.ylabel('$|fft|^2/max(|fft|^2)$')
     plt.title(title_string)
     plt.grid()
     plt.xlim(-100,100)
@@ -154,9 +162,10 @@ def plot_fft(time,data,title_string):
 ##############
 x_max=450e-6
 
-#read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,10) #UF 15-38, RS1
+read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,10) #UF 15-38, RS1
 #read_DBY_output=read_DBY(38,2,26.579535265,8,x_max,10) #UF 15-38, RS2
-read_DBY_output=read_DBY(38,3,26.691097980,8,x_max,10) #UF 15-38, RS3
+#read_DBY_output=read_DBY(38,3,26.691097980,8,x_max,10) #UF 15-38, RS3
+#read_DBY_output=read_DBY(43,1,22.706011205,13,x_max,10) #UF 15-43, RS1
 
 remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
 gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
@@ -169,5 +178,5 @@ ir=ir_data
 ir_time=movingaverage(ir_time,50)
 ir=movingaverage(ir,50)
 
-plot_fft(gw_time,gw,'UF 15-38, RS#3 Groundwave Spectrum')
-plot_fft(ir_time,ir,'UF 15-38, RS#3 Skywave Spectrum')
+plot_fft(gw_time,gw,'UF 15-38, RS#1 Groundwave Spectrum')
+plot_fft(ir_time,ir,'UF 15-38, RS#1 Skywave Spectrum')
