@@ -52,20 +52,36 @@ def read_DBY(event,RS_number, RS_time,suffix,x_max,filterwindow):
     # Read Files #
     ##############
     #import IRIG file
-    lecroy_fileName_DBY_IRIG = "/Volumes/Promise 12TB RAID5/2015 Data/082715/DBY Data/C2DBY0000"+str(suffix)+".trc"
-    lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
-#    seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
-    segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
-    
-    #read IRIG file and print time stamp
-    timestamp,t = IRIGA.IRIGA_signal(segments_DBY_IRIG[0], fs, year=2015)
-    print('time stamp from IRIGA: %s' %timestamp)
-    
-    #import skywaves data
-    lecroy_fileName_DBY = "/Volumes/Promise 12TB RAID5/2015 Data/082715/DBY Data/C1DBY0000"+str(suffix)+".trc"
-    lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
-#    seg_time_DBY = lecroy_DBY.get_seg_time()
-    segments_DBY = lecroy_DBY.get_segments()
+    if suffix <=9:
+        lecroy_fileName_DBY_IRIG = "/Volumes/2015 Data/082715/Merritt Island/C2DBY0000"+str(suffix)+".trc"
+        lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
+    #    seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
+        segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
+        
+        #read IRIG file and print time stamp
+        timestamp,t = IRIGA.IRIGA_signal(segments_DBY_IRIG[0], fs, year=2015)
+        print('time stamp from IRIGA: %s' %timestamp)
+        
+        #import skywaves data
+        lecroy_fileName_DBY = "/Volumes/2015 Data/082715/Merritt Island/C1DBY0000"+str(suffix)+".trc"
+        lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
+    #    seg_time_DBY = lecroy_DBY.get_seg_time()
+        segments_DBY = lecroy_DBY.get_segments()
+    else:
+        lecroy_fileName_DBY_IRIG = "/Volumes/2015 Data/082715/Merritt Island/C2DBY000"+str(suffix)+".trc"
+        lecroy_DBY_IRIG= lc.lecroy_data(lecroy_fileName_DBY_IRIG)
+    #    seg_time_DBY_IRIG = lecroy_DBY_IRIG.get_seg_time()
+        segments_DBY_IRIG = lecroy_DBY_IRIG.get_segments()
+        
+        #read IRIG file and print time stamp
+        timestamp,t = IRIGA.IRIGA_signal(segments_DBY_IRIG[0], fs, year=2015)
+        print('time stamp from IRIGA: %s' %timestamp)
+        
+        #import skywaves data
+        lecroy_fileName_DBY = "/Volumes/2015 Data/082715/Merritt Island/C1DBY000"+str(suffix)+".trc"
+        lecroy_DBY= lc.lecroy_data(lecroy_fileName_DBY)
+    #    seg_time_DBY = lecroy_DBY.get_seg_time()
+        segments_DBY = lecroy_DBY.get_segments()      
     
     GW_propagation_delay=DBY_distance/c
     
