@@ -8,10 +8,16 @@ import csv
 import numpy as np
 import matplotlib.pyplot as plt
 
-filename="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_38_RS1_GW_DBY.csv"
-filename2="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_38_RS1_IR_DBY.csv"
-filename3="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_43_RS4_GW_DBY.csv"
-filename4="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_43_RS4_IR_DBY.csv"
+#inputs
+event1=38
+RS_number1=1
+event2=38
+RS_number2=3
+
+filename="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_"+str(event1)+"_RS"+str(RS_number1)+"_GW_DBY.csv"
+filename2="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_"+str(event1)+"_RS"+str(RS_number1)+"_IR_DBY.csv"
+filename3="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_"+str(event2)+"_RS"+str(RS_number2)+"_GW_DBY.csv"
+filename4="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_"+str(event2)+"_RS"+str(RS_number2)+"_IR_DBY.csv"
 
 def read_csv(filename):
     f=open(filename)
@@ -50,13 +56,27 @@ plt.plot((ir2_time-gw2_max_time-gw2_time[0])*1e6,ir2_data)
 plt.show()
 
 #Xcorr
-xcorr=np.correlate(ir1_data, ir2_data,'full') #calculate xcorr between two skywaves
-plt.plot(ir1_data/np.max(ir1_data))
-plt.plot(ir2_data/np.max(ir2_data))
+DATA1=( ir1_data )#/np.max(ir1_data) )
+DATA2=( ir2_data) #/np.max(ir2_data) )
+
+plt.plot(DATA1/np.max(DATA1))
+plt.plot(DATA2/np.max(DATA2))
+
+xcorr=np.correlate(DATA1, DATA2,'full') #calculate xcorr between two skywaves
+xcorr_reverse=np.correlate(DATA2, DATA1,'full') #calculate xcorr between two skywaves
+
 plt.plot(xcorr/np.max(xcorr))
-#
+plt.plot(xcorr_reverse/np.max(xcorr_reverse))
+
+
 xcorr_delay=np.argmax(xcorr)-(xcorr.size-1)/2 #this delay is how much one skywave is shifted relative to another. It must, however, be referenced to the same feature of the groundwave, i.e. GW peak
 xcorr_delay=xcorr_delay*(1/10e6)
 xcorr_delay=xcorr_delay-(gw1_max_time-gw2_max_time) #here is the bit of code that references the xcorr lag delay to the gw peak
 print(xcorr_delay)
+
+xcorr_reverse_delay=np.argmax(xcorr_reverse)-(xcorr_reverse.size-1)/2 #this delay is how much one skywave is shifted relative to another. It must, however, be referenced to the same feature of the groundwave, i.e. GW peak
+xcorr_reverse_delay=xcorr_reverse_delay*(1/10e6)
+xcorr_reverse_delay=xcorr_reverse_delay-(gw1_max_time-gw2_max_time) #here is the bit of code that references the xcorr lag delay to the gw peak
+print(xcorr_reverse_delay)
+
 plt.show()
