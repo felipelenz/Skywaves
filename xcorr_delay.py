@@ -7,12 +7,14 @@ Created on Thu Mar  3 09:55:02 2016
 import csv
 import numpy as np
 import matplotlib.pyplot as plt
+from sympy.solvers import solve
+from sympy import Symbol, root
 
 #inputs
 event1=38
 RS_number1=1
-event2=38
-RS_number2=3
+event2=43
+RS_number2=4
 
 filename="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_"+str(event1)+"_RS"+str(RS_number1)+"_GW_DBY.csv"
 filename2="/Users/felipelenz/Google Drive/8-7-2015 skywaves .csv files/Final Version of GW and IR/UF_15_"+str(event1)+"_RS"+str(RS_number1)+"_IR_DBY.csv"
@@ -79,4 +81,31 @@ xcorr_reverse_delay=xcorr_reverse_delay*(1/10e6)
 xcorr_reverse_delay=xcorr_reverse_delay-(gw1_max_time-gw2_max_time) #here is the bit of code that references the xcorr lag delay to the gw peak
 print(xcorr_reverse_delay)
 
+plt.show()
+
+#dh=Symbol('dh')
+#h1=Symbol('h1')
+h1=50e3#np.linspace(50e3,100e3,1000)
+r=208.9e3
+c=2.99e8
+dh=np.linspace(0,10e3,1000)
+#dt=np.abs(xcorr_delay)
+
+#dh=(1/2)*np.sqrt(4*h1**2+(c*dt)**2+(4*c*dt)*np.sqrt(h1**2+(r/2)**2))-h1
+#print(dh)
+#plt.plot(h1/1000,dh/1000)
+#plt.xlabel('h1 (km)')
+#plt.ylabel('dh (km)')
+
+for i in range(0,10):
+    h1=50e3
+    h1=h1+i*5*1e3
+    dt=(2*np.sqrt((dh + h1)**2 + (r/2)**2) - 2*np.sqrt(h1**2 + (r/2)**2))/c
+
+    plt.plot(dt*1e6,dh/1000,label="h1="+str(h1/1000)+" (km)",linewidth=2)
+    plt.xlabel('absolute value of xcorr lag $|\Delta t|$ ($\mu s$)')
+    plt.ylabel('$\Delta h$ (km)')
+    plt.legend(loc=4)
+plt.grid()
+    
 plt.show()
