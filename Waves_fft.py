@@ -121,6 +121,43 @@ def take_fft(data,N,Ts):
     Fk=fft.fftshift(Fk) #Shift zero frequency to center
     nu=fft.fftshift(nu) #Shift zero freq to center
     return nu, Fk
+###########################
+# Tukey Window Definition #
+###########################
+def tukeywin(window_length, alpha=0.5):
+    '''The Tukey window, also known as the tapered cosine window, can be regarded as a cosine lobe of width \alpha * N / 2
+    that is convolved with a rectangle window of width (1 - \alpha / 2). At \alpha = 1 it becomes rectangular, and
+    at \alpha = 0 it becomes a Hann window.
+ 
+    We use the same reference as MATLAB to provide the same results in case users compare a MATLAB output to this function
+    output
+ 
+    Reference
+    ---------
+    http://www.mathworks.com/access/helpdesk/help/toolbox/signal/tukeywin.html
+ 
+    '''
+    # Special cases
+    if alpha <= 0:
+        return np.ones(window_length) #rectangular window
+    elif alpha >= 1:
+        return np.hanning(window_length)
+ 
+    # Normal case
+    x = np.linspace(0, 1, window_length)
+    w = np.ones(x.shape)
+ 
+    # first condition 0 <= x < alpha/2
+    first_condition = x<alpha/2
+    w[first_condition] = 0.5 * (1 + np.cos(2*np.pi/alpha * (x[first_condition] - alpha/2) ))
+ 
+    # second condition already taken care of
+ 
+    # third condition 1 - alpha / 2 <= x <= 1
+    third_condition = x>=(1 - alpha/2)
+    w[third_condition] = 0.5 * (1 + np.cos(2*np.pi/alpha * (x[third_condition] - 1 + alpha/2))) 
+ 
+    return w
     
 ####################
 # Plot FFT routine #
@@ -139,6 +176,7 @@ def plot_fft(time1,data1,time2,data2,title_string):
     #zero pad data to increase frequency resolution
         N=len(data)
         window=np.ones(N)
+#        window=tukeywin(N)
         pad=np.zeros(N*1e3)
         data=np.append(pad,data)
         data=np.append(data,pad)
@@ -165,8 +203,8 @@ def plot_fft(time1,data1,time2,data2,title_string):
 #        Window_Fk=window_FFT[1]
         return nu,Fk
     
-    nu1, Fk1=callfft(padded_data1,padded_window1)
-    nu2, Fk2=callfft(padded_data2,padded_window2)
+    nu1, Fk1=callfft(padded_data1*padded_window1,padded_window1)
+    nu2, Fk2=callfft(padded_data2*padded_window1,padded_window2)
     
     TF=Fk2/Fk1
     
@@ -181,23 +219,34 @@ def plot_fft(time1,data1,time2,data2,title_string):
     plt.xlabel('Frequency (kHz)')
     plt.ylabel('Trans. Func. Magnitude (linear)')
     plt.grid()
-#    plt.xlim(-300,300)
+#    plt.xlim(-50,50)
     
     plt.subplot(312)
     plt.plot(nu1*1e-3,Mag_dB,label='Trans. Func. Magnitude (dB)')
     plt.xlabel('Frequency (kHz)')
     plt.ylabel('Trans. Func. Magnitude (dB)')
     plt.grid()
-#    plt.xlim(-300,300)
+#    plt.xlim(-50,50)
     
     plt.subplot(313)
     plt.plot(nu1*1e-3,Phase)   
     plt.xlabel('Frequency (kHz)')
     plt.ylabel('Trans. Func. Phase (rad/s)')
     plt.grid()
-#    plt.xlim(-300,300)
+#    plt.xlim(-50,50)
     
-   
+
+    #Save to an .csv file
+    ofile=open('UF_15_381_to_434_TF_tukey.csv','w')
+    
+    mywriter=csv.writer(ofile)
+    mywriter.writerow(['Time','Mag_dB','Phase']) #Each columns title
+    for i in range (0,len(nu1)):
+        
+        mywriter.writerow([nu1[i],Mag_dB[i],Phase[i]])
+    
+    ofile.close()
+    
 #    max_ampl=np.max(np.absolute(Fk)**2) #find max 
 #    ampl=np.ones(len(nu))*max_ampl #create an array 
 #    plt.plot(nu*1e-3,ampl) #Max
