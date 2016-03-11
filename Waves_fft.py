@@ -24,11 +24,13 @@ read_DBY is an updated version of Skywaves_plot_with_IRIG_LPF, but the
 UTC time reference output was done much more carefully. 
 @author: lenz
 """
-
+import pandas
 from read_DBY import read_DBY
 import matplotlib.pyplot as plt
 from numpy import fft
 import numpy as np
+from scipy import signal
+import csv
 
 #################
 # Remove 60 Hz #
@@ -70,8 +72,32 @@ def remove_60Hz_slope(data,x_max):
 # Moving Average Filter #
 #########################
 def movingaverage(interval, window_size):
+#    window=np.ones(int(window_size))/float(window_size)
+#    return pandas.rolling_mean(interval, window)
+#def movingaverage(interval, window_size):
     window= np.ones(int(window_size))/float(window_size)
-    return np.convolve(interval, window, mode='valid') 
+    filter_delay=((window_size-1)/2)*1/10e6
+    return np.convolve(interval, window, mode='valid') ,filter_delay
+
+###################
+# Low Pass Filter #
+###################
+def lowpass(interval,cutoff):
+    fs=10e6
+    order=5
+    
+    nyq=0.5*fs #Hz
+    normal_cutoff=cutoff/nyq 
+    b,a=signal.butter(order,normal_cutoff,'low',analog=False)
+    
+    w,h=signal.freqz(b,a)
+#    plt.semilogx(w*fs/(2*np.pi),np.abs(h))
+#    plt.axvline(cutoff)
+#    plt.show()
+    w,mag,phase=signal.bode((b,a))
+    filter_delay=-np.diff(phase)/(2*np.pi)
+    plt.plot(w[1:]*fs/(2*np.pi),filter_delay)
+    return signal.lfilter(b,a,interval)
 
 #############################
 # Break data into GW and IR #
@@ -99,61 +125,120 @@ def take_fft(data,N,Ts):
 ####################
 # Plot FFT routine #
 ####################
-def plot_fft(time,data,title_string):
+def plot_fft(time1,data1,time2,data2,title_string):
     
     #plot original data
-    plt.plot(time,data)
+    plt.plot(time1,data1,label='data1')
+    plt.plot(time2,data2,label='data1')
+    plt.legend()
     plt.xlabel('Time in ($\mu s$)')
     plt.ylabel('Filtered E-field')
     plt.show()
     
+    def zeropad(data):
     #zero pad data to increase frequency resolution
-    N=len(data)
-    window=np.ones(N)
-    pad=np.zeros(N*1e3)
-    data=np.append(pad,data)
-    data=np.append(data,pad)
+        N=len(data)
+        window=np.ones(N)
+        pad=np.zeros(N*1e3)
+        data=np.append(pad,data)
+        data=np.append(data,pad)
     
-    window=np.append(pad,window)
-    window=np.append(window,pad)
-    #plot zero padded data
-    plt.plot(data)
-    plt.show()
+        window=np.append(pad,window)
+        window=np.append(window,pad)
+        #plot zero padded data
+        plt.plot(data)
+        plt.show()
+        return data,window
+        
+    padded_data1,padded_window1=zeropad(data1)
+    padded_data2,padded_window2=zeropad(data2)
     
     #call fft function
-    N=len(data)
-    fs=10e6
-    Ts=1/fs
-    data_FFT=take_fft(data,N,Ts)
-    window_FFT=take_fft(window,N,Ts)
-    nu=data_FFT[0]
-    Fk=data_FFT[1]
-    Window_Fk=window_FFT[1]
+    def callfft(data,window):
+        N=len(data)
+        fs=10e6
+        Ts=1/fs    
+        data_FFT=take_fft(data,N,Ts)
+        window_FFT=take_fft(window,N,Ts)
+        nu=data_FFT[0]
+        Fk=data_FFT[1]
+#        Window_Fk=window_FFT[1]
+        return nu,Fk
+    
+    nu1, Fk1=callfft(padded_data1,padded_window1)
+    nu2, Fk2=callfft(padded_data2,padded_window2)
+    
+    TF=Fk2/Fk1
+    
+    Mag=np.absolute(TF)**2 #linear
+    Mag_dB=20*np.log10(np.abs(TF)) #dB
+    Phase=np.unwrap(np.angle(TF)) #rad/s
+    
     
     #plot magnitude squared of fft
-    plt.plot(nu*1e-3,np.absolute(Fk)**2/np.max(np.absolute(Fk)**2),label='data')
-    plt.plot(nu*1e-3,np.absolute(Window_Fk)**2/np.max(np.absolute(Window_Fk)**2),label='window') #Window spectra
-    plt.legend()
-    
-    max_ampl=np.max(np.absolute(Fk)**2) #find max 
-    ampl=np.ones(len(nu))*max_ampl #create an array 
-    plt.plot(nu*1e-3,ampl) #Max
-    plt.plot(nu*1e-3,ampl/1.995) #3dB drop
-    
-    index=np.argmax(1/((np.absolute(Fk)**2)-ampl/1.995)) #find closest point to -3dB (half power)
-    fc=float(nu[index])*1e-3
-    print("3dB frequency cutoff = %3.2f kHz" %np.abs(fc))
-    
-    #plot 3dB frequency lines
-    plt.plot([nu[index]*1e-3,nu[index]*1e-3],[-0.2,1])#[-np.min(np.absolute(Fk)**2),np.max(np.absolute(Fk)**2)])
-    plt.plot([-nu[index]*1e-3,-nu[index]*1e-3],[-0.2,1])#[-np.min(np.absolute(Fk)**2),np.max(np.absolute(Fk)**2)]) 
-    
+    plt.subplot(311)
+    plt.plot(nu1*1e-3,Mag,label='Trans. Func. Magnitude (linear)')
     plt.xlabel('Frequency (kHz)')
-    plt.ylabel('$|fft|^2/max(|fft|^2)$')
-    plt.title(title_string)
+    plt.ylabel('Trans. Func. Magnitude (linear)')
     plt.grid()
-    plt.xlim(-100,100)
+#    plt.xlim(-300,300)
     
+    plt.subplot(312)
+    plt.plot(nu1*1e-3,Mag_dB,label='Trans. Func. Magnitude (dB)')
+    plt.xlabel('Frequency (kHz)')
+    plt.ylabel('Trans. Func. Magnitude (dB)')
+    plt.grid()
+#    plt.xlim(-300,300)
+    
+    plt.subplot(313)
+    plt.plot(nu1*1e-3,Phase)   
+    plt.xlabel('Frequency (kHz)')
+    plt.ylabel('Trans. Func. Phase (rad/s)')
+    plt.grid()
+#    plt.xlim(-300,300)
+    
+   
+#    max_ampl=np.max(np.absolute(Fk)**2) #find max 
+#    ampl=np.ones(len(nu))*max_ampl #create an array 
+#    plt.plot(nu*1e-3,ampl) #Max
+#    plt.plot(nu*1e-3,ampl/1.995) #3dB drop
+#    
+#    index=np.argmax(1/((np.absolute(Fk)**2)-ampl/1.995)) #find closest point to -3dB (half power)
+#    fc=float(nu[index])*1e-3
+#    print("3dB frequency cutoff = %3.2f kHz" %np.abs(fc))
+#    
+#    #plot 3dB frequency lines
+#    plt.axvline(nu[index]*1e-3)
+#    plt.axvline(-nu[index]*1e-3)
+#    
+#    plt.subplot(312)
+#    plt.plot(nu*1e-3,20*np.log10(np.absolute(Window_Fk)),label='Window')
+#    plt.plot(nu*1e-3,20*np.log10(np.absolute(Fk)),label='Data')
+#   
+#    #plot 3dB frequency lines
+#    plt.axvline(nu[index]*1e-3)
+#    plt.axvline(-nu[index]*1e-3)
+##    plt.plot(nu*1e-3,np.absolute(Window_Fk)**2/np.max(np.absolute(Window_Fk)**2),label='window') #Window spectra
+#    plt.legend()      
+#    plt.xlabel('Frequency (kHz)')
+#    plt.grid()
+#    
+##    plt.xlim(-100,100)
+#    
+#     #Calculate and Plot Phase and Group Delay
+#    plt.subplot(313)
+#    phase=np.unwrap(np.angle(TF))
+#    delay=-(1/(2*np.pi))*np.diff(phase)
+##    
+##    plt.plot(nu*1e-3,phase,label='phase')
+#    plt.plot(nu1[1:]*1e-3,delay,label='group delay')
+#    plt.plot(nu2[1:]*1e-3,delay,label='group delay')
+#    plt.xlabel('Frequency (kHz)')
+#    plt.ylabel('Phase (rad)')
+#    plt.ylabel('Group Delay (seconds)')
+#    plt.grid()
+
+    plt.title(title_string)
     plt.show()
     return
     
@@ -162,12 +247,35 @@ def plot_fft(time,data,title_string):
 ##############
 x_max=450e-6
 
-read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,10) #UF 15-38, RS1
+read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,1) #UF 15-38, RS1
 #read_DBY_output=read_DBY(38,2,26.579535265,8,x_max,10) #UF 15-38, RS2
 #read_DBY_output=read_DBY(38,3,26.691097980,8,x_max,10) #UF 15-38, RS3
+#read_DBY_output=read_DBY(38,4,26.734557870,8,x_max,10) #UF 15-38, RS4
+#read_DBY_output=read_DBY(38,5,26.764446000,8,x_max,10) #UF 15-38, RS5
+#read_DBY_output=read_DBY(39,1,66.583436840,9,x_max,10) #UF 15-39, RS1
+#read_DBY_output=read_DBY(39,2,66.586552840,9,x_max,10) #UF 15-39, RS2
+#read_DBY_output=read_DBY(39,3,66.633136315,9,x_max,10) #UF 15-39, RS3
+#read_DBY_output=read_DBY(39,5,66.671758785,9,x_max,10) #UF 15-39, RS5
+#read_DBY_output=read_DBY(40,2,20.746971600,10,x_max,10) #UF 15-40, RS2
+#read_DBY_output=read_DBY(40,3,20.767465080,10,x_max,10) #UF 15-40, RS3
+#read_DBY_output=read_DBY(41,1,57.298446790,11,x_max,10) #UF 15-41, RS1
+#read_DBY_output=read_DBY(41,2,57.373669615,11,x_max,10) #UF 15-41, RS2
+#read_DBY_output=read_DBY(41,3,57.405116910,11,x_max,10) #UF 15-41, RS3
+#read_DBY_output=read_DBY(41,4,57.555913445,11,x_max,10) #UF 15-41, RS4
+#read_DBY_output=read_DBY(41,5,57.575066540,11,x_max,10) #UF 15-41, RS5
+#read_DBY_output=read_DBY(42,1,42.712899355,12,x_max,10) #UF 15-42, RS1
+#read_DBY_output=read_DBY(42,3,42.862766400,12,x_max,10) #UF 15-42, RS3
+#read_DBY_output=read_DBY(42,4,43.058185590,12,x_max,10) #UF 15-42, RS4
+#read_DBY_output=read_DBY(42,5,43.338093110,12,x_max,10) #UF 15-42, RS5
+#read_DBY_output=read_DBY(42,6,43.366312590,12,x_max,10) #UF 15-42, RS6
 #read_DBY_output=read_DBY(43,1,22.706011205,13,x_max,10) #UF 15-43, RS1
+#read_DBY_output=read_DBY(43,2,22.934697575,13,x_max,10) #UF 15-43, RS2
+#read_DBY_output=read_DBY(43,3,23.157666725,13,x_max,10) #UF 15-43, RS3
+#read_DBY_output=read_DBY(43,4,23.293418545,13,x_max,10) #UF 15-43, RS4
+#read_DBY_output=read_DBY(43,5,23.389957810,13,x_max,10) #UF 15-43, RS5
 
 remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
+print('UTC reference time: %s' %remove_60Hz_slope_output[2])
 gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
 
 gw_time=gw_time
@@ -175,8 +283,59 @@ gw=gw_data
 ir_time=ir_time
 ir=ir_data
 
-ir_time=movingaverage(ir_time,50)
-ir=movingaverage(ir,50)
+UF_15_38_time=ir_time
+UF_15_38_data=lowpass(ir,900e3)
+UF_15_38_data=ir
 
-plot_fft(gw_time,gw,'UF 15-38, RS#1 Groundwave Spectrum')
-plot_fft(ir_time,ir,'UF 15-38, RS#1 Skywave Spectrum')
+#Save to an .csv file
+#ofile=open('UF_15_43_RS1_GW_DBY.csv','w')
+#
+#mywriter=csv.writer(ofile)
+#mywriter.writerow(['Time','Uncalibrated, filtered, processed E-field']) #Each columns title
+#for i in range (0,len(gw_time)):
+#    
+#    mywriter.writerow([gw_time[i],gw[i]])
+#
+#ofile.close()
+#
+#ofile=open('UF_15_43_RS1_IR_DBY.csv','w')
+#
+#mywriter=csv.writer(ofile)
+#mywriter.writerow(['Time','Uncalibrated, filtered, processed E-field']) #Each columns title
+#for i in range (0,len(ir_time)):
+#    
+#    mywriter.writerow([ir_time[i],ir[i]])
+#
+#ofile.close()
+
+read_DBY_output=read_DBY(43,4,23.293418545,13,x_max,1) #UF 15-43, RS4
+remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
+print('UTC reference time: %s' %remove_60Hz_slope_output[2])
+gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
+
+gw_time=gw_time
+gw=gw_data
+ir_time=ir_time
+ir=ir_data
+
+UF_15_43_time=ir_time
+UF_15_43_data=lowpass(ir,900e3)
+UF_15_43_data=ir
+
+plot_fft(UF_15_38_time,UF_15_38_data,UF_15_43_time,UF_15_43_data,'raw')
+
+#XCORR CODE:
+xcorr=np.correlate(UF_15_38_data,UF_15_43_data,'full')
+xcorr_delay=np.argmax(xcorr)-(xcorr.size-1)/2 #this delay is how much one skywave is shifted relative to another. It must, however, be referenced to the same feature of the groundwave, i.e. GW peak
+xcorr_delay=xcorr_delay*(1/10e6)
+print(xcorr_delay)
+
+plt.plot(UF_15_38_time,UF_15_38_data,label='UF 15-38, RS1')
+plt.plot(UF_15_43_time,UF_15_43_data,label='UF 15-38, RS4')
+plt.show()
+plt.legend()
+plt.grid()
+
+plt.plot(xcorr)
+plt.show()
+plt.grid()
