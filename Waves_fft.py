@@ -94,10 +94,15 @@ def lowpass(interval,cutoff):
 #    plt.semilogx(w*fs/(2*np.pi),np.abs(h))
 #    plt.axvline(cutoff)
 #    plt.show()
-    w,mag,phase=signal.bode((b,a))
-    filter_delay=-np.diff(phase)/(2*np.pi)
-    plt.plot(w[1:]*fs/(2*np.pi),filter_delay)
-    return signal.lfilter(b,a,interval)
+#    w,mag,phase=signal.bode((b,a))
+#    filter_delay=-np.diff(phase)/(2*np.pi)
+#    plt.plot(w[1:]*fs/(2*np.pi),filter_delay)
+#    plt.show()
+   
+    lpfiltered=signal.filtfilt(b,a,interval)
+#    plt.plot(lpfiltered)
+#    plt.show()
+    return lpfiltered
 
 #############################
 # Break data into GW and IR #
@@ -296,7 +301,7 @@ def plot_fft(time1,data1,time2,data2,title_string):
 ##############
 x_max=450e-6
 
-read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,1) #UF 15-38, RS1
+#read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,1) #UF 15-38, RS1
 #read_DBY_output=read_DBY(38,2,26.579535265,8,x_max,10) #UF 15-38, RS2
 #read_DBY_output=read_DBY(38,3,26.691097980,8,x_max,10) #UF 15-38, RS3
 #read_DBY_output=read_DBY(38,4,26.734557870,8,x_max,10) #UF 15-38, RS4
@@ -309,7 +314,7 @@ read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,1) #UF 15-38, RS1
 #read_DBY_output=read_DBY(40,3,20.767465080,10,x_max,10) #UF 15-40, RS3
 #read_DBY_output=read_DBY(41,1,57.298446790,11,x_max,10) #UF 15-41, RS1
 #read_DBY_output=read_DBY(41,2,57.373669615,11,x_max,10) #UF 15-41, RS2
-#read_DBY_output=read_DBY(41,3,57.405116910,11,x_max,10) #UF 15-41, RS3
+#read_DBY_output=read_DBY(41,3,57.405116910,11,x_max,1) #UF 15-41, RS3
 #read_DBY_output=read_DBY(41,4,57.555913445,11,x_max,10) #UF 15-41, RS4
 #read_DBY_output=read_DBY(41,5,57.575066540,11,x_max,10) #UF 15-41, RS5
 #read_DBY_output=read_DBY(42,1,42.712899355,12,x_max,10) #UF 15-42, RS1
@@ -323,68 +328,172 @@ read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,1) #UF 15-38, RS1
 #read_DBY_output=read_DBY(43,4,23.293418545,13,x_max,10) #UF 15-43, RS4
 #read_DBY_output=read_DBY(43,5,23.389957810,13,x_max,10) #UF 15-43, RS5
 
+
+
+read_DBY_output=read_DBY(38,1,26.522908895,8,x_max,1) #UF 15-38, RS1
 remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
 print('UTC reference time: %s' %remove_60Hz_slope_output[2])
 gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
-
 gw_time=gw_time
 gw=gw_data
 ir_time=ir_time
 ir=ir_data
+gw_peak=gw_time[np.argmax(gw)]
+lpf_ir_time=ir_time
+lpf_ir_data=lowpass(ir,100e3)
+#plt.plot(ir_time-gw_peak,ir/np.max(lpf_ir_data),label='raw')#,color='b')
+plt.plot(lpf_ir_time-gw_peak,lpf_ir_data/np.max(lpf_ir_data),linewidth=2)#,color='r')
+lpf_gw_time=gw_time
+lpf_gw_data=lowpass(gw,900e3)
+#plt.plot(gw_time-gw_peak,gw/np.max(lpf_ir_data),label='raw')#,color='b')
+plt.plot(lpf_gw_time-gw_peak,lpf_gw_data/np.max(lpf_ir_data),label='UF 15-32, RS1',linewidth=2)#,color='r')
 
-UF_15_38_time=ir_time
-UF_15_38_data=lowpass(ir,900e3)
-UF_15_38_data=ir
+read_DBY_output=read_DBY(39,1,66.583436840,9,x_max,1) #UF 15-39, RS1
+remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
+print('UTC reference time: %s' %remove_60Hz_slope_output[2])
+gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
+gw_time=gw_time
+gw=gw_data
+ir_time=ir_time
+ir=ir_data
+gw_peak=gw_time[np.argmax(gw)]
+lpf_ir_time=ir_time
+lpf_ir_data=lowpass(ir,100e3)
+#plt.plot(ir_time-gw_peak,ir/np.max(lpf_ir_data),label='raw')#,color='b')
+plt.plot(lpf_ir_time-gw_peak,lpf_ir_data/np.max(lpf_ir_data),linewidth=2)#,color='r')
+lpf_gw_time=gw_time
+lpf_gw_data=lowpass(gw,900e3)
+#plt.plot(gw_time-gw_peak,gw/np.max(lpf_ir_data),label='raw',color='b')
+plt.plot(lpf_gw_time-gw_peak,lpf_gw_data/np.max(lpf_ir_data),label='UF 15-39, RS1',linewidth=2)#,color='r')
 
-#Save to an .csv file
-#ofile=open('UF_15_43_RS1_GW_DBY.csv','w')
-#
-#mywriter=csv.writer(ofile)
-#mywriter.writerow(['Time','Uncalibrated, filtered, processed E-field']) #Each columns title
-#for i in range (0,len(gw_time)):
-#    
-#    mywriter.writerow([gw_time[i],gw[i]])
-#
-#ofile.close()
-#
-#ofile=open('UF_15_43_RS1_IR_DBY.csv','w')
-#
-#mywriter=csv.writer(ofile)
-#mywriter.writerow(['Time','Uncalibrated, filtered, processed E-field']) #Each columns title
-#for i in range (0,len(ir_time)):
-#    
-#    mywriter.writerow([ir_time[i],ir[i]])
-#
-#ofile.close()
+read_DBY_output=read_DBY(40,3,20.767465080,10,x_max,1) #UF 15-40, RS3
+remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
+print('UTC reference time: %s' %remove_60Hz_slope_output[2])
+gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
+gw_time=gw_time
+gw=gw_data
+ir_time=ir_time
+ir=ir_data
+gw_peak=gw_time[np.argmax(gw)]
+lpf_ir_time=ir_time
+lpf_ir_data=lowpass(ir,100e3)
+#plt.plot(ir_time-gw_peak,ir/np.max(lpf_ir_data),label='raw')#,color='b')
+plt.plot(lpf_ir_time-gw_peak,lpf_ir_data/np.max(lpf_ir_data),linewidth=2)#,color='r')
+lpf_gw_time=gw_time
+lpf_gw_data=lowpass(gw,900e3)
+#plt.plot(gw_time-gw_peak,gw/np.max(lpf_ir_data),label='raw',color='b')
+plt.plot(lpf_gw_time-gw_peak,lpf_gw_data/np.max(lpf_ir_data),label='UF 15-40, RS3',linewidth=2)#,color='r')
+
+read_DBY_output=read_DBY(41,1,57.298446790,11,x_max,1) #UF 15-41, RS1
+remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
+print('UTC reference time: %s' %remove_60Hz_slope_output[2])
+gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
+gw_time=gw_time
+gw=gw_data
+ir_time=ir_time
+ir=ir_data
+gw_peak=gw_time[np.argmax(gw)]
+lpf_ir_time=ir_time
+lpf_ir_data=lowpass(ir,100e3)
+#plt.plot(ir_time-gw_peak,ir/np.max(lpf_ir_data),label='raw')#,color='b')
+plt.plot(lpf_ir_time-gw_peak,lpf_ir_data/np.max(lpf_ir_data),linewidth=2)#,color='r')
+lpf_gw_time=gw_time
+lpf_gw_data=lowpass(gw,900e3)
+#plt.plot(gw_time-gw_peak,gw/np.max(lpf_ir_data),label='raw',color='b')
+plt.plot(lpf_gw_time-gw_peak,lpf_gw_data/np.max(lpf_ir_data),label='UF 15-41, RS1',linewidth=2)#,color='r')
+
+read_DBY_output=read_DBY(42,4,43.058185590,12,x_max,1) #UF 15-42, RS4
+remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
+print('UTC reference time: %s' %remove_60Hz_slope_output[2])
+gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
+gw_time=gw_time
+gw=gw_data
+ir_time=ir_time
+ir=ir_data
+gw_peak=gw_time[np.argmax(gw)]
+lpf_ir_time=ir_time
+lpf_ir_data=lowpass(ir,100e3)
+#plt.plot(ir_time-gw_peak,ir/np.max(lpf_ir_data),label='raw')#,color='b')
+plt.plot(lpf_ir_time-gw_peak,lpf_ir_data/np.max(lpf_ir_data),linewidth=2)#,color='r')
+lpf_gw_time=gw_time
+lpf_gw_data=lowpass(gw,900e3)
+#plt.plot(gw_time-gw_peak,gw/np.max(lpf_ir_data),label='raw',color='b')
+plt.plot(lpf_gw_time-gw_peak,lpf_gw_data/np.max(lpf_ir_data),label='UF 15-42, RS4',linewidth=2)#,color='r')
 
 read_DBY_output=read_DBY(43,4,23.293418545,13,x_max,1) #UF 15-43, RS4
 remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
 print('UTC reference time: %s' %remove_60Hz_slope_output[2])
 gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
-
 gw_time=gw_time
 gw=gw_data
 ir_time=ir_time
 ir=ir_data
+gw_peak=gw_time[np.argmax(gw)]
+lpf_ir_time=ir_time
+lpf_ir_data=lowpass(ir,100e3)
+#plt.plot(ir_time-gw_peak,ir/np.max(lpf_ir_data),label='raw')#,color='b')
+plt.plot(lpf_ir_time-gw_peak,lpf_ir_data/np.max(lpf_ir_data),linewidth=2)#,color='r')
+lpf_gw_time=gw_time
+lpf_gw_data=lowpass(gw,900e3)
+#plt.plot(gw_time-gw_peak,gw/np.max(lpf_ir_data),label='raw',color='b')
+plt.plot(lpf_gw_time-gw_peak,lpf_gw_data/np.max(lpf_ir_data),label='UF 15-43, RS4',linewidth=2)#,color='r')
 
-UF_15_43_time=ir_time
-UF_15_43_data=lowpass(ir,900e3)
-UF_15_43_data=ir
 
-plot_fft(UF_15_38_time,UF_15_38_data,UF_15_43_time,UF_15_43_data,'raw')
-
-#XCORR CODE:
-xcorr=np.correlate(UF_15_38_data,UF_15_43_data,'full')
-xcorr_delay=np.argmax(xcorr)-(xcorr.size-1)/2 #this delay is how much one skywave is shifted relative to another. It must, however, be referenced to the same feature of the groundwave, i.e. GW peak
-xcorr_delay=xcorr_delay*(1/10e6)
-print(xcorr_delay)
-
-plt.plot(UF_15_38_time,UF_15_38_data,label='UF 15-38, RS1')
-plt.plot(UF_15_43_time,UF_15_43_data,label='UF 15-38, RS4')
+plt.title('Raw data vs. LPF at 900 kHz')
 plt.show()
-plt.legend()
-plt.grid()
 
-plt.plot(xcorr)
-plt.show()
-plt.grid()
+
+
+
+##Save to an .csv file
+##ofile=open('UF_15_43_RS1_GW_DBY.csv','w')
+##
+##mywriter=csv.writer(ofile)
+##mywriter.writerow(['Time','Uncalibrated, filtered, processed E-field']) #Each columns title
+##for i in range (0,len(gw_time)):
+##    
+##    mywriter.writerow([gw_time[i],gw[i]])
+##
+##ofile.close()
+##
+##ofile=open('UF_15_43_RS1_IR_DBY.csv','w')
+##
+##mywriter=csv.writer(ofile)
+##mywriter.writerow(['Time','Uncalibrated, filtered, processed E-field']) #Each columns title
+##for i in range (0,len(ir_time)):
+##    
+##    mywriter.writerow([ir_time[i],ir[i]])
+##
+##ofile.close()
+#
+#read_DBY_output=read_DBY(43,4,23.293418545,13,x_max,1) #UF 15-43, RS4
+#remove_60Hz_slope_output=remove_60Hz_slope(read_DBY_output,x_max)
+#print('UTC reference time: %s' %remove_60Hz_slope_output[2])
+#gw_time,gw_data,ir_time,ir_data=chop_gw_ir(remove_60Hz_slope_output)
+#
+#gw_time=gw_time
+#gw=gw_data
+#ir_time=ir_time
+#ir=ir_data
+#
+#UF_15_43_time=ir_time
+#UF_15_43_data=lowpass(ir,900e3)
+#UF_15_43_data=ir
+#
+#plot_fft(UF_15_38_time,UF_15_38_data,UF_15_43_time,UF_15_43_data,'raw')
+#
+##XCORR CODE:
+#xcorr=np.correlate(UF_15_38_data,UF_15_43_data,'full')
+#xcorr_delay=np.argmax(xcorr)-(xcorr.size-1)/2 #this delay is how much one skywave is shifted relative to another. It must, however, be referenced to the same feature of the groundwave, i.e. GW peak
+#xcorr_delay=xcorr_delay*(1/10e6)
+#print(xcorr_delay)
+#
+#plt.plot(UF_15_38_time,UF_15_38_data,label='UF 15-38, RS1')
+#plt.plot(UF_15_43_time,UF_15_43_data,label='UF 15-38, RS4')
+#plt.show()
+#plt.legend()
+#plt.grid()
+#
+#plt.plot(xcorr)
+#plt.show()
+#plt.grid()
