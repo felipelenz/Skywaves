@@ -1,61 +1,48 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Oct  8 15:24:41 2015
+Created on Fri Mar 18 13:48:23 2016
 
 @author: lenz
+This code removes the 60 Hz slope for electric field DBY data. It does so by
+taking the first and the last samples of the signal, finding the slope of the 
+line connecting these two points and removing that slope from the original data
 
-This code asks the user to select the beginning and the end of the waveform 
-then returns the the slope equation y=mx+b and the user limit inputs
+It returns the processed time and data alongside with the corrected UTC 
+reference time
 """
 import numpy as np
-from pylab import show, ginput, plot
-import matplotlib.pyplot as plt
-
-def remove_slope(x,y,fs): 
-    fig=plt.figure()
-    ax=fig.add_subplot(111)
+#################
+# Remove 60 Hz #
+################             
+def remove_60Hz_slope(data,x_max):
+    #Because moving averaging introduces discontinuities on the edges of the
+    #curve, we choose to ignore the first 10 samples in the beggining and at 
+    #the end of the curve. 10 samples at 0.1us/sample is 1us, 1 us in the 
+    #beggining and 1 us in the end, thus UTC_time needs to be updated to
+    #UTC_time + 1 us, when we plot the new data
+    fs=10e6
+    Ts=1/fs
     
+    first_sample=10
+    last_sample=x_max/Ts-10
     
-    ax.plot(x,y)
-    plt.title('Zoom in and click at the start '
-              'and the end of the waveform. \n'
-              'Close window after clicking the two points')
-    temp=[]
+    x0=data[0][first_sample]
+    x1=data[0][last_sample] #500 us  = 5000 samples at 10MHz fs
     
-    def onclick(event):
-        print('I pressed g')
-        if event.key == "g":
-            xx = ginput(2)    
-            temp.append(xx)
-    cid = fig.canvas.mpl_connect('key_press_event', onclick)
-
-    show()
-#    print("Please click")
-
-    xx = temp[0]
-#    print(temp)
-#    print("clicked",xx)
-    sampling_time=1/fs
-    x0=xx[0][0]
-    y0=xx[0][1]
-    
-    x1=xx[1][0]
-    y1=xx[1][1]
-    print(x0,x1,y0,y1)
-    
+    y0=data[1][first_sample]
+    y1=data[1][last_sample] 
     m=(y1-y0)/(x1-x0)
     b=-m*x0*y0
+        
+    slope=m*data[0][10:-10]+b #y=mx+b
+    yoffset=np.mean(data[1][first_sample:first_sample+300])
+    modified_yoffset=yoffset+slope
     
-    print('y='+str(m)+'x+'+str(b))
-    slope=m*(x-x0)+b
-     
-    n0=x0/sampling_time
-    n1=x1/sampling_time
-    slope0=slope[n0] 
-    plot(x,y, 'b', \
-    [x[n0],x[n1]],[y[n0],y[n1]], 'or', \
-    x,slope,'g')
-  
-    show()
+    processed_data=data[1][10:-10]-modified_yoffset #data without 60 Hz
+    processed_time=data[0][10:-10]
     
-    return m,b,x0,x1,slope0
+    #adjust UTC reference time to account for ignoring the first 10 samples
+    timestamp=data[11]
+    reference_UTC_seconds=data[12]
+    UTC_reference_time = "%r:%r:%11.9f" %(timestamp.hour,timestamp.minute,reference_UTC_seconds+first_sample*Ts)
+    return processed_time, processed_data, UTC_reference_time
