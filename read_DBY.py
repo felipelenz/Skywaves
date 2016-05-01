@@ -171,20 +171,21 @@ def read_DBY(event,RS_number, RS_time,suffix,x_max,filterwindow):
         print("10-90 risetime (sec)=%r"%risetime_90_10_time)
         print("5-peak risetime (sec)=%r"%five_percent_to_peak_time)
         print("half peak width (sec)=%r"%half_width_time)
-        plt.plot(x,y, 'b', \
-        x[t0_noise:tf_noise],y[t0_noise:tf_noise], 'g', \
-        [x[0],x[-1]],[mean,mean], 'r', \
-        [x[0],x[-1]],[mean+sigma,mean+sigma], '--r', \
-        [x[0],x[-1]],[mean-sigma,mean-sigma], '--r', \
-        x[min_ind],y[min_ind],'og',\
-        x[five_percent_ind],y[five_percent_ind],'oy',\
-        [x[ten_percent_ind],x[ninety_percent_ind]],[y[ten_percent_ind],y[ninety_percent_ind]], 'or',\
-        [x[fifty_percent_ind],x[fifty_percent_afterpeak_ind]],[y[fifty_percent_ind],y[fifty_percent_afterpeak_ind]],'oc')
-        plt.show()
+#        plt.plot(x,y, 'b', \
+#        x[t0_noise:tf_noise],y[t0_noise:tf_noise], 'g', \
+#        [x[0],x[-1]],[mean,mean], 'r', \
+#        [x[0],x[-1]],[mean+sigma,mean+sigma], '--r', \
+#        [x[0],x[-1]],[mean-sigma,mean-sigma], '--r', \
+#        x[min_ind],y[min_ind],'og',\
+#        x[five_percent_ind],y[five_percent_ind],'oy',\
+#        [x[ten_percent_ind],x[ninety_percent_ind]],[y[ten_percent_ind],y[ninety_percent_ind]], 'or',\
+#        [x[fifty_percent_ind],x[fifty_percent_afterpeak_ind]],[y[fifty_percent_ind],y[fifty_percent_afterpeak_ind]],'oc')
+#        plt.show()
         
         return risetime_90_10_time, ten_percent_ind, min_ind, y_ampl, mean,\
         twenty_percent_ind, fifty_percent_ind, eighty_percent_ind,\
-        ninety_percent_ind, risetime_90_10, curve_peak, t_max
+        ninety_percent_ind, risetime_90_10, curve_peak, t_max, five_percent_to_peak_time
+        
         
     #    time2=time-group_delay
     #    LPF_skywave = noise_analysis(time2,filtered_skywave,10e6,0)
@@ -198,7 +199,7 @@ def read_DBY(event,RS_number, RS_time,suffix,x_max,filterwindow):
     ground_wave_max=MovAvg_skywave[10]
     ground_wave_time_peak=MovAvg_skywave[11]*(1/fs)
     min_ampl=MovAvg_skywave[4]
-    
+    five_percent_to_peak_time=MovAvg_skywave[12]
     print("Moving Average 10-90 risetime = %r" %MovAvg_skywave[0])
     
     time=time+ground_wave_start
@@ -209,4 +210,4 @@ def read_DBY(event,RS_number, RS_time,suffix,x_max,filterwindow):
     
     return time, Moving_Average_Ez, UTC_reference_time, risetime_10_90, ten_percent_level,\
     ground_wave_start, ground_wave_ampl, min_ampl, ground_wave_max, ground_wave_time_peak,\
-    Ez_data, timestamp, reference_UTC_seconds
+    Ez_data, timestamp, reference_UTC_seconds,five_percent_to_peak_time
